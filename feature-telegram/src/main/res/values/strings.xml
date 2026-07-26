@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UI is English only (AGENT_BRIEF). Bot replies are not here: they are protocol text sent to
+     Telegram, live in CommandRouter, and are never localised or shown on the panel. -->
+<resources>
+
+    <string name="tg_title">Telegram</string>
+    <string name="tg_back">Back</string>
+
+    <!-- Status line — design.md §12 header -->
+    <string name="tg_status_off">Off</string>
+    <string name="tg_status_off_detail">Turn on to accept commands from your phone.</string>
+    <string name="tg_status_connected">Connected · %1$s</string>
+    <string name="tg_status_connected_anon">Connected</string>
+    <string name="tg_status_connected_detail">Long-polling every 50 s while the app is running.</string>
+    <string name="tg_status_unpaired">Waiting to pair</string>
+    <string name="tg_status_unpaired_detail">Send the code below to your bot as /pair &lt;code&gt;.</string>
+    <string name="tg_status_no_token">No bot token</string>
+    <string name="tg_status_no_token_detail">Push a .env with TELEGRAM_BOT_TOKEN over USB, then re-import in Terminal.</string>
+    <string name="tg_status_vault_locked">Vault unavailable</string>
+    <string name="tg_status_vault_locked_detail">The token cannot be read. Create the vault, or unlock it, in Terminal.</string>
+    <string name="tg_status_retrying">Offline · retrying in %1$d s</string>
+    <string name="tg_status_retrying_detail">Backing off after a network failure. It resumes by itself.</string>
+
+    <!-- Pairing block -->
+    <string name="tg_section_paired">PAIRED CHAT</string>
+    <string name="tg_paired_id">id %1$s</string>
+    <string name="tg_paired_allowlisted">✓ allowlisted</string>
+    <string name="tg_pair_code_label">PAIRING CODE</string>
+    <string name="tg_pair_instructions">Send  /pair %1$s  to your bot. The first chat that sends the right code becomes the only one InkDeck answers.</string>
+    <string name="tg_not_paired">No chat paired yet</string>
+    <string name="tg_vault_unreadable">Vault locked — cannot read the paired chat</string>
+
+    <!-- Warning box — Plan.md §7.4, verbatim intent of design.md §12 -->
+    <string name="tg_warning">Keys sent over Telegram are stored in that chat\'s history on Telegram\'s servers. InkDeck deletes the message the moment it is read, but use keys you can rotate — and push .pem files over USB instead.</string>
+
+    <!-- Toggles -->
+    <string name="tg_enabled_label">Telegram control</string>
+    <string name="tg_enabled_detail">Runs a foreground service so the bot can be reached while the app is open.</string>
+    <string name="tg_autodelete_label">Auto-delete secrets</string>
+    <string name="tg_autodelete_detail">Strongly recommended. Deletes /llm and /key messages on ingest.</string>
+    <string name="tg_on">ON</string>
+    <string name="tg_off">OFF</string>
+
+    <!-- Commands -->
+    <string name="tg_section_commands">COMMANDS</string>
+    <string name="tg_commands">/llm &lt;provider&gt; &lt;base_url&gt; &lt;model&gt; &lt;key&gt;\n/key &lt;name&gt; &lt;value&gt;\n/task add &lt;title&gt; | &lt;due&gt; | &lt;repeat&gt;\n/task list [today|week|overdue]\n/task done &lt;id&gt;   ·   /task del &lt;id&gt;\n/note &lt;text&gt;\n/status   ·   /help</string>
+    <string name="tg_commands_due">due:  today 14:00 · tomorrow 9am · 2026-07-30 14:00 · 14:00 — add UTC for a UTC time\nrepeat:  daily · weekdays · weekly mon,wed · monthly 15 · every 3 days</string>
+
+    <!-- Actions -->
+    <string name="tg_repair">Re-pair</string>
+    <string name="tg_disconnect">Disconnect</string>
+    <string name="tg_disconnected_toast">Disconnected. A new pairing code is ready.</string>
+    <string name="tg_repaired_toast">New pairing code generated.</string>
+
+    <!-- Notification — the foreground-service contract needs one; nobody reads it -->
+    <string name="tg_channel_poll">Telegram bot</string>
+    <string name="tg_channel_poll_detail">Keeps the bot reachable. Silent and minimum importance.</string>
+    <string name="tg_notif_title">InkDeck Telegram</string>
+    <string name="tg_notif_listening">Listening for commands</string>
+    <string name="tg_notif_unpaired">Waiting to pair</string>
+    <string name="tg_notif_no_token">No bot token in the vault</string>
+    <string name="tg_notif_vault_locked">Vault locked</string>
+    <string name="tg_notif_retrying">Offline · retrying in %1$d s</string>
+    <string name="tg_notif_stopped">Stopped</string>
+
+</resources>

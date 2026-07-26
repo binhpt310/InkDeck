@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Status-bar icon. Solid white silhouette on transparent: from API 21 the system discards every
+  colour in a small icon and re-tints the alpha channel, so anything with tone arrives as a blob.
+  A paper-plane outline drawn as one filled path.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M21,3 L2,10.5 L9,13 L11.5,20.5 L14.5,15 L20,20 Z M17.6,6.3 L10.6,12.4 L5.6,10.6 Z" />
+</vector>

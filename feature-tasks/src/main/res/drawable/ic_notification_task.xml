@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Status-bar icon. Must be a solid white silhouette on transparent: from API 21 the system
+  ignores every colour in a small icon and re-tints the alpha channel, so a multi-tone glyph
+  arrives as a filled blob.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M4,4 L20,4 L20,20 L4,20 Z M6,6 L6,18 L18,18 L18,6 Z" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M8.4,11.6 L10.8,14 L15.8,9 L17.2,10.4 L10.8,16.8 L7,13 Z" />
+</vector>

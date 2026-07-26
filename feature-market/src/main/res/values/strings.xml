@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UI is English only (shared brief). No locale variants of this file. -->
+<resources>
+
+    <!-- Dashboard chrome -->
+    <string name="market_refresh">Refresh now</string>
+    <string name="market_widgets">Widgets</string>
+    <string name="market_back">Back</string>
+    <string name="market_last_refresh">⟳ %1$s</string>
+    <string name="market_never_refreshed">⟳ —</string>
+    <string name="market_refreshing">⟳ working…</string>
+
+    <!-- Card -->
+    <string name="market_loading">Loading…</string>
+    <!-- design.md §9.1: permanent marker on every widget served by an undeclared endpoint. -->
+    <string name="market_unofficial_short">⚠ unoff.</string>
+    <string name="market_as_of">⌛ as of %1$s</string>
+    <!-- §2.3: error is "!" in a solid badge. In a text run the badge is written out. -->
+    <string name="market_state_error_badge">▪!▪</string>
+    <string name="market_attribution">Data: %1$s</string>
+    <string name="market_attribution_none">Data: no source responded</string>
+
+    <!-- Errors. Each names the source, because "network error" tells the user nothing they can
+         act on and these five sources fail for five different reasons. -->
+    <string name="market_error_generic">Source did not respond</string>
+    <string name="market_error_no_data">No data for %1$s</string>
+
+    <!-- Dashboard states, design.md §5.7 -->
+    <string name="market_empty_title">No widgets</string>
+    <string name="market_empty_detail">Pick the markets you want on the dashboard.</string>
+    <string name="market_empty_action">Widgets</string>
+    <string name="market_offline_title">No network</string>
+    <string name="market_offline_detail">Nothing cached yet. Reconnect and retry.</string>
+    <string name="market_all_failed_title">No source responded</string>
+    <string name="market_all_failed_detail">Every provider for the selected widgets failed.</string>
+    <string name="market_loading_detail">Fetching quotes…</string>
+
+    <!-- Picker, design.md §9.2 -->
+    <string name="market_section_crypto">CRYPTO</string>
+    <string name="market_section_us">US STOCKS</string>
+    <string name="market_section_vn">VN STOCKS</string>
+    <string name="market_section_refresh">REFRESH</string>
+    <string name="market_note_crypto">Binance · no key · documented</string>
+    <string name="market_note_us">Finnhub · free key · Stooq fallback</string>
+    <string name="market_note_unofficial">⚠ unofficial endpoint — may break</string>
+    <string name="market_on">on</string>
+    <string name="market_off">off</string>
+    <string name="market_refresh_manual">manual</string>
+    <string name="market_refresh_minutes">%1$d min</string>
+    <string name="market_refresh_note">Auto-refresh pauses when the screen is off or another tab is open.</string>
+    <string name="market_add_symbol">Add symbol</string>
+    <string name="market_add_symbol_hint">Ticker, e.g. SOLUSDT</string>
+    <string name="market_add">Add</string>
+
+    <!-- Detail, design.md §9.3 -->
+    <!-- Change figure then the span it covers, e.g. "▲ +2.14%  +2,271.30   24h". -->
+    <string name="market_change_line">%1$s   %2$s</string>
+    <string name="market_stats">Open %1$s   High %2$s\nLow  %3$s   Volume %4$s</string>
+    <string name="market_unofficial_detail">This source is an undeclared endpoint and can stop working without notice.</string>
+
+    <!-- Spoken descriptions. Canvas strokes and Canvas text say nothing to TalkBack or to
+         uiautomator, so every custom view here carries one. -->
+    <string name="market_card_desc">%1$s, %2$s, %3$s</string>
+    <string name="market_spark_desc">%1$s price history, %2$s</string>
+    <string name="market_spark_none">No price history available</string>
+    <string name="market_chart_desc">%1$s candles, %2$s, %3$d bars</string>
+    <string name="market_toggle_on_desc">%1$s widget, on</string>
+    <string name="market_toggle_off_desc">%1$s widget, off</string>
+
+</resources>

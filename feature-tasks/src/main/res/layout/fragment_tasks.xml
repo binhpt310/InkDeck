@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tasks tab — design.md §8.1 as revised: a 2×2 board, not a tab strip.
+
+  Every pane is on screen at once. Tabs cost a tap and a full-screen [F] flush to answer "is
+  there anything else", which on this panel is expensive enough that you stop asking.
+
+  Weights, not fixed heights: the content area is 572 × 682 dp portrait but 682 is not what the
+  window reports (Plan.md §0), so the grid has to divide whatever it is actually given.
+
+  The editor and the expanded pane are the last children so they draw over everything.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/headerRow"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_bar_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/ink_screen_margin">
+
+            <TextView
+                android:id="@+id/pendingLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.InkDeck.Title2" />
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/actionAdd"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/tasks_new" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_900" />
+
+        <!-- Row 1: Today | Week -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <dev.inkdeck.tasks.list.TaskPaneView
+                android:id="@+id/paneToday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="@dimen/ink_divider"
+                android:layout_height="match_parent"
+                android:background="@color/ink_900" />
+
+            <dev.inkdeck.tasks.list.TaskPaneView
+                android:id="@+id/paneWeek"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_900" />
+
+        <!-- Row 2: All | Done -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <dev.inkdeck.tasks.list.TaskPaneView
+                android:id="@+id/paneAll"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="@dimen/ink_divider"
+                android:layout_height="match_parent"
+                android:background="@color/ink_900" />
+
+            <dev.inkdeck.tasks.list.TaskPaneView
+                android:id="@+id/paneDone"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--
+      A pane opened full-screen. The board shows three or four rows per pane; when there are
+      twelve, this is where you read them — with the paged rail §5.5 asks for, which four panes
+      could never each afford.
+    -->
+    <FrameLayout
+        android:id="@+id/expanded"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/paper"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/ink_bar_height"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <dev.inkdeck.eink.widget.EinkIconButton
+                    android:id="@+id/expandedBack"
+                    android:layout_width="@dimen/ink_bar_height"
+                    android:layout_height="@dimen/ink_bar_height"
+                    android:contentDescription="@string/tasks_close" />
+
+                <TextView
+                    android:id="@+id/expandedTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.InkDeck.Title2" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/ink_divider"
+                android:background="@color/ink_200" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <dev.inkdeck.eink.widget.EinkRecyclerView
+                    android:id="@+id/expandedList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="true" />
+
+                <dev.inkdeck.eink.widget.PagedScrollRail
+                    android:id="@+id/expandedRail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/ink_space_2" />
+            </FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <dev.inkdeck.tasks.editor.TaskEditorView
+        android:id="@+id/editor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</FrameLayout>

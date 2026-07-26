@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(adb version *)",
+      "Bash(adb devices *)"
+    ]
+  }
+}

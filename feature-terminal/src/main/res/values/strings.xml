@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="term_files">Files</string>
+    <string name="term_reconnect">Reconnect</string>
+
+    <string name="term_status_idle">not connected</string>
+    <string name="term_status_connecting">○ connecting</string>
+    <string name="term_status_connected">● connected</string>
+    <string name="term_status_disconnected">○ disconnected</string>
+    <string name="term_status_failed">▪!▪ failed</string>
+
+    <string name="term_no_host">No host</string>
+
+    <string name="vault_create_title">Create key vault</string>
+    <string name="vault_unlock_title">Unlock key vault</string>
+    <string name="vault_passphrase_hint">Passphrase</string>
+    <string name="vault_confirm_hint">Repeat passphrase</string>
+    <string name="vault_wrong_passphrase">Wrong passphrase.</string>
+    <string name="vault_mismatch">The two passphrases do not match.</string>
+    <string name="vault_too_short">Use at least 8 characters.</string>
+    <string name="vault_deriving">Deriving key…</string>
+
+    <string name="vault_enable_title">Turn passphrase on</string>
+    <string name="action_create_vault">Create vault (no passphrase)</string>
+    <string name="action_create_vault_pass">Create vault with a passphrase</string>
+    <string name="action_passphrase_on">Turn passphrase on</string>
+    <string name="action_passphrase_off">Turn passphrase off</string>
+    <string name="action_unlock_vault">Unlock vault</string>
+    <string name="action_import">Import pushed files</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_ok">OK</string>
+
+    <string name="files_title">Files</string>
+    <string name="files_close">Close</string>
+    <string name="files_refresh">Refresh</string>
+    <string name="files_loading">Loading…</string>
+    <string name="files_home">Home directory</string>
+    <string name="files_up">Parent directory</string>
+    <string name="files_go_to">Go to path</string>
+    <string name="files_empty">Empty directory</string>
+    <string name="files_upload">⬆ Upload</string>
+    <string name="files_new_dir">✚ Dir</string>
+    <string name="files_new_dir_hint">Directory name</string>
+    <string name="files_cd">cd here</string>
+    <string name="files_download">Download</string>
+    <string name="files_rename">Rename</string>
+    <string name="files_delete">Delete</string>
+    <string name="files_delete_confirm">Delete %1$s? This cannot be undone.</string>
+    <string name="files_delete_dir_confirm">Delete the directory %1$s and everything in it? This cannot be undone.</string>
+    <string name="files_no_dir_download">Downloading a whole directory is not supported yet.</string>
+    <string name="files_downloading">Downloading %1$s…</string>
+    <string name="files_saved">Saved to %1$s</string>
+    <string name="files_uploading">Uploading %1$s…</string>
+    <string name="files_uploaded">Uploaded %1$s</string>
+    <string name="files_no_picker">No file picker on this device. Push the file with adb instead, then upload it from the import directory.</string>
+    <string name="files_not_connected">Connect a session first.</string>
+    <string name="viewer_close">Back to files</string>
+    <string name="viewer_failed">Could not read the file</string>
+    <string name="viewer_truncated"> · showing first %1$s</string>
+    <string name="viewer_hex_truncated">\n… hex view truncated at 64 KB.\n</string>
+
+    <string name="hostkey_new_title">New host key</string>
+    <string name="hostkey_pin">Pin and connect</string>
+    <string name="hostkey_changed_title">HOST KEY CHANGED</string>
+</resources>

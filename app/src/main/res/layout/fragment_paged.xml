@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Every scrollable surface in the app gets this shape: a fling-free scroller with the paged rail
+  pinned to the right edge (design.md §5.5). The rail overlays rather than insets the content so
+  its appearance never reflows text.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <dev.inkdeck.eink.widget.EinkScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </dev.inkdeck.eink.widget.EinkScrollView>
+
+    <dev.inkdeck.eink.widget.PagedScrollRail
+        android:id="@+id/rail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="@dimen/ink_space_2" />
+
+</FrameLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- design.md §4. Base grid 4 dp; every value below is a multiple of it. -->
+<resources>
+    <dimen name="ink_space_1">4dp</dimen>
+    <dimen name="ink_space_2">8dp</dimen>
+    <dimen name="ink_space_3">12dp</dimen>
+    <dimen name="ink_space_4">16dp</dimen>
+    <dimen name="ink_space_6">24dp</dimen>
+    <dimen name="ink_space_8">32dp</dimen>
+    <dimen name="ink_space_12">48dp</dimen>
+
+    <dimen name="ink_screen_margin">16dp</dimen>
+    <dimen name="ink_card_padding">16dp</dimen>
+    <dimen name="ink_section_gap">24dp</dimen>
+
+    <!-- 56 dp, not Android's 48 dp: no hover, no ripple, ~60 ms visual latency. Users cannot
+         tell a missed tap from a slow one, so they double-tap. Bigger targets fix that. -->
+    <dimen name="ink_touch_min">56dp</dimen>
+    <dimen name="ink_touch_primary">64dp</dimen>
+    <dimen name="ink_row_min">56dp</dimen>
+    <dimen name="ink_bar_height">56dp</dimen>
+    <dimen name="ink_puck">56dp</dimen>
+    <dimen name="ink_puck_collapsed">32dp</dimen>
+
+    <dimen name="ink_border">1.5dp</dimen>
+    <dimen name="ink_border_thick">2dp</dimen>
+    <dimen name="ink_divider">1dp</dimen>
+    <dimen name="ink_radius">4dp</dimen>
+    <dimen name="ink_tab_indicator">3dp</dimen>
+    <dimen name="ink_selected_bar">4dp</dimen>
+
+    <!-- design.md §5.5 draws the paged-scroll rail at 48 dp. Widened to 56 dp so its buttons
+         meet the 56 dp touch minimum in both axes; 8 dp out of a 572 dp screen. -->
+    <dimen name="ink_rail_width">56dp</dimen>
+    <dimen name="ink_rail_button_height">64dp</dimen>
+    <dimen name="ink_rail_readout_height">40dp</dimen>
+    <dimen name="ink_sidebar_width">220dp</dimen>
+    <dimen name="ink_drawer_width">400dp</dimen>
+
+    <dimen name="ink_icon">24dp</dimen>
+    <dimen name="ink_icon_large">32dp</dimen>
+</resources>

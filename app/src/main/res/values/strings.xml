@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InkDeck</string>
+
+    <string name="tab_terminal">Terminal</string>
+    <string name="tab_tasks">Tasks</string>
+    <string name="tab_market">Market</string>
+    <string name="tab_ai">AI</string>
+
+    <string name="action_search">Search</string>
+    <string name="action_overflow">More</string>
+    <string name="action_flush">Force full refresh</string>
+    <string name="action_cancel_generic">Cancel</string>
+
+    <string name="menu_flush">Flush</string>
+    <string name="menu_keys">Keys</string>
+    <string name="menu_ai">AI</string>
+    <string name="menu_theme">Theme</string>
+    <string name="menu_rotate">Rotate</string>
+    <string name="menu_quick">Quick</string>
+    <string name="menu_awake">Awake</string>
+    <string name="menu_files">Files</string>
+    <string name="menu_telegram">Telegram</string>
+    <string name="menu_awake_on">Screen will stay on.</string>
+    <string name="menu_awake_off">Screen can sleep again.</string>
+    <string name="menu_terminal_only">Open the Terminal tab first.</string>
+    <string name="menu_theme_disconnects">Switching theme restarts the screen and will drop the SSH session. Reconnect is two taps.</string>
+    <string name="menu_theme_switch">Switch anyway</string>
+
+    <!-- terminal_empty_*, tasks_empty_*, market_empty_*, ai_empty_* are deliberately absent.
+         Each feature module owns its own empty-state strings now that every tab has a real
+         fragment; a same-named string here would win the resource merge and silently replace
+         the real one — this bit us once already in Phase 4, see design.md. -->
+</resources>

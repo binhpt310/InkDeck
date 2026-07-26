@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- List -->
+    <string name="tasks_new">New task</string>
+    <string name="tasks_filter_today">Today</string>
+    <string name="tasks_filter_week">Week</string>
+    <string name="tasks_filter_all">All</string>
+    <string name="tasks_filter_done">Done</string>
+
+    <string name="tasks_section_overdue">OVERDUE</string>
+    <string name="tasks_section_today">TODAY</string>
+    <string name="tasks_section_tomorrow">TOMORROW</string>
+    <string name="tasks_section_this_week">THIS WEEK</string>
+    <string name="tasks_section_later">LATER</string>
+    <string name="tasks_section_someday">NO DATE</string>
+
+    <!-- Header. Overdue is called out separately: it is the number that changes what you do. -->
+    <plurals name="tasks_pending">
+        <item quantity="one">%1$d pending task</item>
+        <item quantity="other">%1$d pending tasks</item>
+    </plurals>
+    <string name="tasks_pending_with_overdue">%1$d pending · %2$d overdue</string>
+
+    <string name="tasks_pane_empty_today">Nothing due today</string>
+    <string name="tasks_pane_empty_week">Nothing this week</string>
+    <string name="tasks_pane_empty_all">No tasks yet</string>
+    <string name="tasks_pane_empty_done">Nothing completed</string>
+
+    <string name="tasks_empty_title">Nothing due</string>
+    <string name="tasks_empty_detail">Tasks with a reminder fire even after a reboot.</string>
+    <string name="tasks_empty_done_title">Nothing completed yet</string>
+    <string name="tasks_empty_done_detail">Finished tasks collect here.</string>
+
+    <string name="tasks_done_at">done %1$s</string>
+    <string name="tasks_yesterday_at">Yesterday %1$s</string>
+    <string name="tasks_tomorrow_at">Tomorrow %1$s</string>
+    <string name="tasks_today_named">Today · %1$s</string>
+    <string name="tasks_tomorrow_named">Tomorrow · %1$s</string>
+    <string name="tasks_rolled_forward">“%1$s” moved to %2$s</string>
+
+    <!-- Editor -->
+    <string name="tasks_editor_new">New task</string>
+    <string name="tasks_editor_edit">Edit task</string>
+    <string name="tasks_close">Close</string>
+    <string name="tasks_save">Save</string>
+    <string name="tasks_delete">Delete</string>
+    <string name="tasks_delete_confirm">Delete “%1$s”? This cannot be undone.</string>
+    <string name="tasks_title_required">A title is required</string>
+
+    <string name="tasks_field_title">TITLE</string>
+    <string name="tasks_field_title_hint">What needs doing</string>
+    <string name="tasks_field_notes">NOTES</string>
+    <string name="tasks_field_notes_hint">Optional detail</string>
+    <string name="tasks_field_due">DUE</string>
+    <string name="tasks_field_time">TIME</string>
+    <string name="tasks_field_remind">REMIND</string>
+    <string name="tasks_field_repeat">REPEAT</string>
+    <string name="tasks_field_repeat_days">ON THESE DAYS</string>
+    <string name="tasks_field_priority">PRIORITY</string>
+    <string name="tasks_field_telegram">NOTIFY TELEGRAM</string>
+    <string name="tasks_telegram_detail">The bot is the reliable channel — this tablet cannot wake itself for a reminder. Turn this off and the task only shows a notification here, if the screen happens to be on.</string>
+
+    <string name="tasks_zone_device">Device %1$s</string>
+    <string name="tasks_zone_utc">UTC</string>
+
+    <string name="tasks_no_date">No date</string>
+    <string name="tasks_no_time">--:--</string>
+    <string name="tasks_remind_none">none</string>
+    <string name="tasks_repeat_none">none</string>
+    <string name="tasks_repeat_daily">daily</string>
+    <string name="tasks_repeat_weekdays">wkdys</string>
+    <string name="tasks_repeat_weekly">wkly</string>
+    <string name="tasks_repeat_monthly">monthly</string>
+    <string name="tasks_telegram_on">ON</string>
+    <string name="tasks_telegram_off">OFF</string>
+
+    <!-- Accessibility. Every label in the task list and the editor is Canvas text, so these
+         are the only thing TalkBack has to read. -->
+    <string name="tasks_a11y_complete">Complete %1$s</string>
+    <string name="tasks_a11y_reopen">Reopen %1$s</string>
+    <string name="tasks_a11y_no_days">No days selected</string>
+
+    <!-- Notifications -->
+    <string name="tasks_channel_reminders">Task reminders</string>
+    <string name="tasks_channel_reminders_detail">Fires at the time you set on a task.</string>
+    <string name="tasks_notify_done">Done</string>
+
+    <string name="tasks_channel_guard">Reminder guard</string>
+    <string name="tasks_channel_guard_detail">Keeps pending reminders alive. This ROM force-stops idle apps, which cancels their alarms. Shown only while a reminder is waiting.</string>
+    <string name="tasks_guard_next">Next: %1$s</string>
+    <plurals name="tasks_guard_armed">
+        <item quantity="one">%1$d reminder armed</item>
+        <item quantity="other">%1$d reminders armed</item>
+    </plurals>
+
+</resources>

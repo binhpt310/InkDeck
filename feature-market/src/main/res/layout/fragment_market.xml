@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Market tab — design.md §9.1.
+
+  The picker and the detail view are the last two children so they draw over the grid *and* over
+  the paged rail. Sibling overlays rather than fragment transactions, for the reason TaskEditorView
+  gives: no window animation, and the tab bar below must not move.
+
+  §9.1 puts `⟳ 13:35  ⊞ widgets` in the screen's title bar. That bar lives in `app/` and is shared
+  by every tab, so this module cannot add to it; the actions sit in their own 56 dp row instead.
+  That costs 56 dp of the 682 dp column. If the coordinator makes the shell title bar accept
+  per-tab actions, this row should move up into it and the height comes back.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/actionRow"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_bar_height"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="0dp">
+
+            <TextView
+                android:id="@+id/lastRefresh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/actionRefresh"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/market_refresh" />
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/actionWidgets"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/market_widgets" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <dev.inkdeck.eink.widget.EinkScrollView
+                android:id="@+id/scroller"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <dev.inkdeck.market.ui.MarketGridView
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/ink_screen_margin"
+                    android:paddingTop="@dimen/ink_space_3"
+                    android:paddingEnd="@dimen/ink_screen_margin"
+                    android:paddingBottom="@dimen/ink_space_6" />
+            </dev.inkdeck.eink.widget.EinkScrollView>
+
+            <dev.inkdeck.eink.widget.EmptyStateView
+                android:id="@+id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <dev.inkdeck.eink.widget.PagedScrollRail
+                android:id="@+id/rail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/ink_space_2" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <dev.inkdeck.market.ui.WidgetPickerView
+        android:id="@+id/picker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <dev.inkdeck.market.ui.SymbolDetailView
+        android:id="@+id/detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</FrameLayout>

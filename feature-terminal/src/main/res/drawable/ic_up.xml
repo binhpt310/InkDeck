@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Parent directory. Arrow into a folder mouth, so it reads as "up a level" rather than
+     "scroll up". -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M3,20 L3,6 L9.5,6 L11.5,8.5 L21,8.5 L21,20 Z"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M12,11 L16.5,16 L13.2,16 L13.2,18.5 L10.8,18.5 L10.8,16 L7.5,16 Z" />
+</vector>

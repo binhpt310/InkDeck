@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Dark theme — design.md §2.2. Opt-in, default OFF.
+
+  Why off by default: driving most pixels black increases ghosting, makes full refreshes more
+  visible, and with no frontlight on this device it is harder to read in dim light, not easier.
+
+  The ramp is a straight 255-x inversion of §2.1, which keeps every contrast ratio at or above
+  the light values (ink_700 11.9:1, ink_500 6.9:1 on black).
+-->
+<resources>
+    <color name="ink_900">#FFFFFFFF</color>
+    <color name="ink_700">#FFC5C5C5</color>
+    <color name="ink_500">#FF949494</color>
+    <color name="ink_300">#FF575757</color>
+    <color name="ink_200">#FF373737</color>
+    <color name="paper">#FF000000</color>
+</resources>

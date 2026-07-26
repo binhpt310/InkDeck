@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher icon background. Deliberately a fixed literal rather than @color/paper: the
+         icon sits in the OEM launcher and must not invert when the app's dark theme is on. -->
+    <color name="ic_launcher_bg">#FFFFFFFF</color>
+</resources>

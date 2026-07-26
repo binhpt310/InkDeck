@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AI chat — design.md §10.
+
+  The provider settings overlay is the last child so it draws over everything, including the
+  paged rail. Sibling overlay rather than a fragment transaction, for the reason design.md §8.3
+  gives for the task editor: no window animation, and the tab bar below must not move.
+
+  Chrome budget, out of the 682 dp content box (Plan.md §0): 56 dp header + 56 dp composer +
+  56 dp tab bar, leaving ~514 dp of transcript. If the shell's own title bar is also shown that
+  drops to 458 dp — see the note in AiFragment.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_bar_height"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="0dp">
+
+            <dev.inkdeck.eink.widget.EinkButton
+                android:id="@+id/aiModel"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/ink_touch_min"
+                android:layout_marginTop="@dimen/ink_space_1"
+                android:layout_marginBottom="@dimen/ink_space_1"
+                android:layout_weight="1" />
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/aiHistory"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/ai_history" />
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/aiProviders"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/ai_providers_title" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <dev.inkdeck.eink.widget.EinkRecyclerView
+                android:id="@+id/aiList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="true" />
+
+            <dev.inkdeck.eink.widget.EmptyStateView
+                android:id="@+id/aiEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <dev.inkdeck.eink.widget.PagedScrollRail
+                android:id="@+id/aiRail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/ink_space_2" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingTop="@dimen/ink_space_2"
+            android:paddingBottom="@dimen/ink_space_2">
+
+            <EditText
+                android:id="@+id/aiInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_ai_input"
+                android:gravity="center_vertical"
+                android:hint="@string/ai_composer_hint"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxLines="4"
+                android:minHeight="@dimen/ink_touch_min"
+                android:paddingStart="@dimen/ink_space_3"
+                android:paddingEnd="@dimen/ink_space_3"
+                android:textAppearance="@style/TextAppearance.InkDeck.Body" />
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/aiSend"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/ai_send" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <dev.inkdeck.ai.ui.ProviderSettingsView
+        android:id="@+id/aiSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</FrameLayout>

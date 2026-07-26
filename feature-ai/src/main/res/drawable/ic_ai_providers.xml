@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Three sliders — the settings list, distinct in silhouette from the overflow dots the shell
+     already uses. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M3,6 L21,6 M3,12 L21,12 M3,18 L21,18"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2"
+        android:strokeLineCap="square" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M7,3.5 L9.5,3.5 L9.5,8.5 L7,8.5 Z M14.5,9.5 L17,9.5 L17,14.5 L14.5,14.5 Z M7,15.5 L9.5,15.5 L9.5,20.5 L7,20.5 Z" />
+</vector>

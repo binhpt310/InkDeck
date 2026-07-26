@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Type scale — design.md §3.2.
+
+  Nothing below 14 sp (mono_term at 13 sp is the one documented exception: it is the terminal
+  grid, user-cyclable 11 to 17 sp). No weight below 400. No italics, ever: dithering destroys
+  them. Emphasis is weight or ink_900, never slant and never colour.
+
+  Line boxes: §3.2 gives absolute line heights, but android:lineHeight is API 28+ and minSdk
+  here is 26. lineSpacingMultiplier is used instead, computed as (target line / size) / 1.17,
+  where 1.17 is the platform face's natural line height. That lands within about a pixel of
+  spec at 212 dpi; trim on device if a screen reads tight.
+-->
+<resources>
+
+    <style name="TextAppearance.InkDeck" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@string/ink_font_ui</item>
+        <item name="android:textColor">@color/ink_900</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- 34 sp / 40 dp — market price, big numerals -->
+    <style name="TextAppearance.InkDeck.Display">
+        <item name="android:textSize">34sp</item>
+        <item name="android:lineSpacingMultiplier">1.01</item>
+    </style>
+
+    <!-- 24 sp / 32 dp — screen titles -->
+    <style name="TextAppearance.InkDeck.Title1">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lineSpacingMultiplier">1.14</item>
+    </style>
+
+    <!-- 20 sp / 28 dp — section headers, card titles -->
+    <style name="TextAppearance.InkDeck.Title2">
+        <item name="android:textSize">20sp</item>
+        <item name="android:lineSpacingMultiplier">1.20</item>
+    </style>
+
+    <!-- 18 sp / 26 dp — task titles, list primaries -->
+    <style name="TextAppearance.InkDeck.BodyLarge">
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineSpacingMultiplier">1.23</item>
+    </style>
+
+    <!-- 16 sp / 24 dp — default body, floor for sustained reading -->
+    <style name="TextAppearance.InkDeck.Body">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingMultiplier">1.28</item>
+    </style>
+
+    <!-- 14 sp / 20 dp — metadata, timestamps. Absolute minimum. -->
+    <style name="TextAppearance.InkDeck.Caption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingMultiplier">1.22</item>
+        <item name="android:textColor">@color/ink_500</item>
+    </style>
+
+    <!-- 13 sp / 18 dp — terminal grid. TerminalView measures its own cells; this exists so
+         non-Canvas terminal chrome matches. -->
+    <style name="TextAppearance.InkDeck.MonoTerm">
+        <item name="android:fontFamily">@string/ink_font_mono</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineSpacingMultiplier">1.18</item>
+    </style>
+
+    <!-- 14 sp / 20 dp — paths, symbols, inline code -->
+    <style name="TextAppearance.InkDeck.MonoUi">
+        <item name="android:fontFamily">@string/ink_font_mono</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingMultiplier">1.22</item>
+    </style>
+
+    <!-- Emphasis variants. Weight, not slant. -->
+    <style name="TextAppearance.InkDeck.Body.Emphasis">
+        <item name="android:fontFamily">@string/ink_font_ui_emphasis</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.InkDeck.Caption.Emphasis">
+        <item name="android:fontFamily">@string/ink_font_ui_emphasis</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ink_900</item>
+    </style>
+
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-only surface. Lives in src/debug so it cannot ship in a release APK.
+
+  Launch it with:
+    adb shell am start -n dev.inkdeck/dev.inkdeck.lab.EinkLabActivity
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name="dev.inkdeck.lab.EinkLabActivity"
+            android:exported="true"
+            android:label="@string/lab_title"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden" />
+    </application>
+
+</manifest>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  design.md §3.1 specifies Inter (UI) and JetBrains Mono (terminal). Those font files are not
+  in the repo, so these indirect through to the platform faces for now: Roboto and Droid Sans
+  Mono on Android 8.1.
+
+  Swapping in the real faces is a one-line change here plus dropping the .ttf files into
+  res/font/ — no call site changes. Both are open-licensed (Inter: OFL, JetBrains Mono: OFL).
+
+  Note the platform faces are a real compromise on this panel: Roboto's tighter apertures and
+  Droid Sans Mono's ambiguous l/1/I are exactly what §3.1 picked Inter and JetBrains Mono to
+  avoid, and dithering makes that worse rather than better.
+-->
+<resources>
+    <string name="ink_font_ui" translatable="false">sans-serif</string>
+    <string name="ink_font_ui_emphasis" translatable="false">sans-serif-medium</string>
+    <string name="ink_font_mono" translatable="false">monospace</string>
+</resources>

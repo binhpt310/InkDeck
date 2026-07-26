@@ -1,0 +1,55 @@
+[versions]
+# Pinned to what is already in ~/.gradle/caches — see Plan.md §2.3.
+agp = "8.13.1"
+kotlin = "2.0.21"
+coroutines = "1.9.0"
+
+coreKtx = "1.13.1"
+appcompat = "1.7.0"
+fragment = "1.8.5"
+lifecycle = "2.8.7"
+recyclerview = "1.3.2"
+desugar = "2.1.5"
+
+# Phase 2
+jsch = "0.2.21"
+
+# Phase 4
+# KSP is versioned against the exact Kotlin release, not a range — 2.0.21-1.0.28 is the
+# compiler plugin built for kotlin 2.0.21 above. Bumping Kotlin without bumping this fails.
+ksp = "2.0.21-1.0.28"
+# Room 2.7 moved to KSP2 and a newer androidx baseline. 2.6.1 is the last release that builds
+# clean against this catalog, and nothing in the task model needs what 2.7 added.
+room = "2.6.1"
+
+# Phases 5, 7, 8 — all three talk HTTPS.
+# OkHttp 4.12 is the last line supporting minSdk 21 without the 5.x Kotlin-multiplatform churn.
+okhttp = "4.12.0"
+# API 27's system TLS predates several current root CAs and cipher suites. Conscrypt installs a
+# current BoringSSL provider so api.telegram.org and the market endpoints negotiate at all.
+conscrypt = "2.5.2"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
+
+jsch = { module = "com.github.mwiede:jsch", version.ref = "jsch" }
+
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscrypt" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

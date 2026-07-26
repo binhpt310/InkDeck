@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  design.md §7.1 (portrait) and §7.3 (landscape).
+
+  One layout serves both postures rather than a layout-land variant, because MainActivity
+  declares configChanges="orientation|screenSize" to keep the SSH session alive across a
+  rotation — which means nothing is ever re-inflated, so a qualified layout would never load.
+  TerminalFragment.applyPosture() switches between them at runtime instead.
+
+  Portrait: `files` overlays the terminal at 400 dp with a scrim.
+  Landscape: `files` sits at 220 dp and `terminalHolder` gets a matching start margin, so the
+  two are side by side and neither overlaps.
+-->
+<dev.inkdeck.eink.widget.AppBoundsLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_bar_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <dev.inkdeck.eink.widget.EinkIconButton
+            android:id="@+id/btnFiles"
+            android:layout_width="@dimen/ink_touch_min"
+            android:layout_height="@dimen/ink_touch_min"
+            android:contentDescription="@string/term_files" />
+
+        <TextView
+            android:id="@+id/hostName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.InkDeck.Title2" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/ink_space_2"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+
+        <dev.inkdeck.eink.widget.EinkIconButton
+            android:id="@+id/btnReconnect"
+            android:layout_width="@dimen/ink_touch_min"
+            android:layout_height="@dimen/ink_touch_min"
+            android:contentDescription="@string/term_reconnect" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_divider"
+        android:background="@color/ink_200" />
+
+    <FrameLayout
+        android:id="@+id/body"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:id="@+id/terminalHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <dev.inkdeck.terminal.TerminalView
+                android:id="@+id/terminal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <dev.inkdeck.eink.widget.EinkScrollView
+                android:id="@+id/setupScroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/ink_screen_margin" />
+            </dev.inkdeck.eink.widget.EinkScrollView>
+        </FrameLayout>
+
+        <!-- ink_200 rather than a translucent black: design.md §7.2 asks for a scrim, and an
+             alpha wash dithers into noise on this panel. -->
+        <View
+            android:id="@+id/scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ink_200"
+            android:clickable="true"
+            android:visibility="gone" />
+
+        <dev.inkdeck.terminal.sftp.FilesView
+            android:id="@+id/files"
+            android:layout_width="@dimen/ink_drawer_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:visibility="gone" />
+
+        <!-- Above everything, full bleed: a file rendered inside the 220 dp landscape sidebar
+             would be ~28 characters wide, which is not reading. -->
+        <dev.inkdeck.terminal.sftp.FileViewerView
+            android:id="@+id/viewer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_divider"
+        android:background="@color/ink_200" />
+
+    <dev.inkdeck.terminal.TerminalKeyRow
+        android:id="@+id/keyRow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_bar_height"
+        android:visibility="gone" />
+
+</dev.inkdeck.eink.widget.AppBoundsLinearLayout>

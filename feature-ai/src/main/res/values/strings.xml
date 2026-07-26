@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  UI is English only (docs/AGENT_BRIEF.md). Every name is prefixed `ai_` because library
+  resources merge into one namespace in :app — an unprefixed `ic_back` or `save` would silently
+  override feature-tasks' version of the same name.
+-->
+<resources>
+
+    <!-- Chat -->
+    <string name="ai_composer_hint">Ask something…</string>
+    <string name="ai_send">Send</string>
+    <string name="ai_stop">Stop</string>
+    <string name="ai_history">History</string>
+    <string name="ai_new_chat">＋ New chat</string>
+    <string name="ai_pick_profile">Provider</string>
+    <string name="ai_no_profile">No provider</string>
+    <string name="ai_working">Working</string>
+    <string name="ai_stopped">Stopped.</string>
+    <string name="ai_empty_answer">The endpoint returned no text.</string>
+
+    <string name="ai_empty_title">No messages yet</string>
+    <string name="ai_empty_detail">Answers arrive in chunks, not word by word — the panel cannot repaint faster than that and stay readable.</string>
+    <string name="ai_empty_setup_title">No key yet</string>
+    <string name="ai_empty_setup_detail">Add a provider and paste an API key. Keys are encrypted in the app vault, never on /sdcard.</string>
+
+    <!-- Errors. Shown in the transcript as a bordered bubble; §2.3 makes the badge a glyph. -->
+    <string name="ai_error_prefix">▪!▪  %1$s</string>
+    <string name="ai_error_no_profile">No provider is configured. Add one first.</string>
+    <string name="ai_error_vault_locked">The vault is locked. Unlock it in provider settings.</string>
+    <string name="ai_error_key_missing">This profile has no key in the vault any more. Paste it again.</string>
+    <string name="ai_error_generic">The request failed before it reached the endpoint.</string>
+
+    <!-- Providers (design.md §10.1) -->
+    <string name="ai_providers_title">AI providers</string>
+    <string name="ai_provider_add">Add provider</string>
+    <string name="ai_provider_new">New provider</string>
+    <string name="ai_provider_edit">Edit provider</string>
+    <string name="ai_providers_empty">No providers yet.</string>
+    <string name="ai_providers_footer">Keys are stored encrypted in the app vault, never on /sdcard, and are read only while a request is in flight. Profiles can also be set from Telegram with /llm — a key sent that way sits in your chat history, so use one you can rotate.</string>
+    <string name="ai_back">Back</string>
+    <string name="ai_save">Save</string>
+
+    <string name="ai_profile_row">○  %1$s</string>
+    <string name="ai_profile_row_active">●  %1$s — active</string>
+    <string name="ai_profile_key_vault">key  %1$s   · in vault</string>
+    <string name="ai_profile_key_none">key  (none)</string>
+    <string name="ai_profile_use">Use</string>
+    <string name="ai_profile_edit">Edit</string>
+    <string name="ai_profile_delete">Delete</string>
+    <string name="ai_profile_delete_confirm">Delete “%1$s” and its key from the vault? This cannot be undone.</string>
+    <string name="ai_profile_incomplete">Name, base URL and model are all required.</string>
+
+    <string name="ai_field_name">NAME</string>
+    <string name="ai_field_name_hint">anthropic-main</string>
+    <string name="ai_field_kind">API</string>
+    <string name="ai_field_base">BASE URL</string>
+    <string name="ai_field_base_hint">https://api.anthropic.com</string>
+    <string name="ai_field_model">MODEL</string>
+    <string name="ai_field_model_hint">claude-opus-5</string>
+    <string name="ai_field_key">API KEY</string>
+    <string name="ai_field_key_hint">Paste the key</string>
+    <string name="ai_field_key_new">The key goes straight into the vault. Only its masked tail is kept where the UI can read it.</string>
+    <string name="ai_field_key_replace">A key is already stored. Leave this blank to keep it; pasting replaces it.</string>
+    <string name="ai_kind_openai">OpenAI-compatible</string>
+    <string name="ai_kind_anthropic">Anthropic</string>
+
+    <string name="ai_vault_locked_note">The vault is passphrase-protected and locked, so stored keys cannot be read.</string>
+    <string name="ai_vault_unlock">Unlock vault</string>
+    <string name="ai_vault_passphrase_hint">Vault passphrase</string>
+    <string name="ai_vault_wrong">Wrong passphrase.</string>
+
+    <!-- Accessibility. The bubbles are real TextViews, but the model chip and the profile cards
+         are compound views whose meaning is not in any single child. -->
+    <string name="ai_a11y_model">Provider %1$s, model %2$s. Tap to switch.</string>
+    <string name="ai_a11y_you">You said: %1$s</string>
+    <string name="ai_a11y_assistant">Assistant said: %1$s</string>
+    <string name="ai_a11y_profile">%1$s, model %2$s</string>
+    <string name="ai_a11y_profile_active">%1$s, model %2$s, active</string>
+
+</resources>

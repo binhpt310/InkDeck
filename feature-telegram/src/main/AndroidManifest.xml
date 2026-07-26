@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Required from API 28 to call startForeground at all. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application>
+
+        <!--
+          Registers the reminder route and starts the loop on boot, without waiting for
+          MainActivity — see TelegramBootReceiver. Mirrors :feature-tasks's own BootReceiver.
+        -->
+        <receiver
+            android:name=".TelegramBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+          The long poll. Plan.md §7.1: no GMS on this device, so no FCM, and it is behind NAT, so
+          no webhook — the only transport left needs a live process holding a socket open.
+
+          A foreground service does not make that process safe: Plan.md §5.1b-2 recorded one
+          being killed at adj 200 by the ROM's MOGU sweep with an Activity still alive. It is
+          what keeps the ordinary case alive, and reconnect-on-resume (TelegramGraph.startIfEnabled
+          from the host's onResume) is what covers the rest. See TelegramService.
+        -->
+        <service
+            android:name=".TelegramService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+    </application>
+</manifest>

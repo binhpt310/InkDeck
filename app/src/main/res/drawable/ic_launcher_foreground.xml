@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive icon foreground: 108 dp viewport, 72 dp safe zone. Solid black block with the
+     prompt knocked out in white — the only two levels the panel renders without dithering. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M26,26 L82,26 L82,82 L26,82 Z" />
+    <path
+        android:pathData="M38,45 L48,54 L38,63"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6"
+        android:strokeLineCap="square" />
+    <path
+        android:pathData="M54,63 L70,63"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6"
+        android:strokeLineCap="square" />
+</vector>

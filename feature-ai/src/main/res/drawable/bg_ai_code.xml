@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Code block — design.md §10 puts it on an ink_200 fill. This is the one place a pale fill
+     carries meaning safely: it sits inside body text at ink_900, so the contrast that
+     distinguishes it is against the paper around it, not against another grey. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/ink_200" />
+    <corners android:radius="@dimen/ink_radius" />
+</shape>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- minSdk is 26, so an adaptive icon needs no legacy PNG fallback. design.md §14 item 7:
+     vectors only, 212 dpi falls between density buckets and any bitmap would be rescaled. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_bg" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>

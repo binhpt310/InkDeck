@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Theme.InkDeck — the single app theme.
+
+  DayNight so the light/dark switch (design.md §2.2, Plan.md §6.1) is a
+  AppCompatDelegate.setDefaultNightMode call rather than a parallel theme tree. Default is
+  MODE_NIGHT_NO; see InkDeckApp.
+
+  Half of this file is animation suppression. On a 16 fps panel every default Android motion
+  affordance reads as a fault, so they are turned off at the theme level and again
+  programmatically in EinkAnim for the ones themes cannot reach.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.InkDeck" parent="Theme.AppCompat.DayNight.NoActionBar">
+
+        <!-- Grey ramp -->
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:colorBackground">@color/paper</item>
+        <item name="android:textColorPrimary">@color/ink_900</item>
+        <item name="android:textColorSecondary">@color/ink_700</item>
+        <item name="android:textColorTertiary">@color/ink_500</item>
+        <item name="android:textColorHint">@color/ink_500</item>
+        <item name="android:textColorLink">@color/ink_900</item>
+
+        <item name="colorPrimary">@color/ink_900</item>
+        <item name="colorPrimaryDark">@color/paper</item>
+        <item name="colorAccent">@color/ink_900</item>
+        <item name="colorControlNormal">@color/ink_900</item>
+        <item name="colorControlActivated">@color/ink_900</item>
+
+        <!-- No ripple. There is no hover and no cursor; a ripple is 300 ms of smear. -->
+        <item name="colorControlHighlight">@color/ink_transparent</item>
+        <item name="android:colorControlHighlight">@color/ink_transparent</item>
+
+        <!-- No activity transitions -->
+        <item name="android:windowAnimationStyle">@style/Animation.InkDeck.None</item>
+        <item name="android:windowActivityTransitions">false</item>
+        <item name="android:windowContentTransitions">false</item>
+        <item name="android:windowEnterTransition">@null</item>
+        <item name="android:windowExitTransition">@null</item>
+        <item name="android:windowSharedElementEnterTransition">@null</item>
+        <item name="android:windowSharedElementExitTransition">@null</item>
+
+        <!-- No overscroll glow -->
+        <item name="android:overScrollMode">never</item>
+
+        <!-- No shadows, elevation or gradients anywhere: they dither into mud. -->
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="android:fontFamily">@string/ink_font_ui</item>
+        <item name="android:textAppearance">@style/TextAppearance.InkDeck.Body</item>
+
+        <!-- The OEM status bar stays visible and is not ours (design.md §6). Match it to paper
+             so the 56 px inset does not read as a separate dark band. -->
+        <item name="android:statusBarColor">@color/paper</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:navigationBarColor">@color/paper</item>
+    </style>
+
+    <!--
+      Full-bleed dialog. Not a floating card: a dimmed backdrop is a large grey wash that the
+      panel dithers, and the drop shadow around a card is exactly the gradient §2 bans. Dialogs
+      here take the whole screen and are dismissed by their own Cancel button or Back.
+    -->
+    <style name="Theme.InkDeck.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@style/Animation.InkDeck.None</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorControlHighlight">@color/ink_transparent</item>
+        <item name="android:fontFamily">@string/ink_font_ui</item>
+    </style>
+
+    <style name="Animation.InkDeck.None" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+</resources>

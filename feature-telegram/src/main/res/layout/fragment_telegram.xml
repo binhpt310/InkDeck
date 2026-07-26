@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Telegram settings — design.md §12.
+
+  One scrolling column, no cards and no dividers beyond the 1 dp rules the sketch draws: the
+  screen is a list of statements about state, and boxing each one would spend 32 dp of a 572 dp
+  width on decoration. EinkScrollView rather than NestedScrollView so the fling is gone (§5.5).
+-->
+<dev.inkdeck.eink.widget.EinkScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/ink_space_8">
+
+        <!-- Title bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_bar_height"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <dev.inkdeck.eink.widget.EinkIconButton
+                android:id="@+id/actionBack"
+                android:layout_width="@dimen/ink_touch_min"
+                android:layout_height="@dimen/ink_touch_min"
+                android:contentDescription="@string/tg_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tg_title"
+                android:textAppearance="@style/TextAppearance.InkDeck.Title1" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <!-- Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="@dimen/ink_screen_margin"
+            android:paddingTop="@dimen/ink_space_3"
+            android:paddingBottom="@dimen/ink_space_3">
+
+            <TextView
+                android:id="@+id/statusLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.InkDeck.Body.Emphasis" />
+
+            <TextView
+                android:id="@+id/statusDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_1"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <!-- On/off -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="@dimen/ink_screen_margin"
+            android:paddingTop="@dimen/ink_space_3"
+            android:paddingBottom="@dimen/ink_space_3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tg_enabled_label"
+                    android:textAppearance="@style/TextAppearance.InkDeck.Body" />
+
+                <dev.inkdeck.eink.widget.SegmentedControl
+                    android:id="@+id/toggleEnabled"
+                    android:layout_width="160dp"
+                    android:layout_height="@dimen/ink_touch_min" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_1"
+                android:text="@string/tg_enabled_detail"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <!-- Paired chat / pairing code -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="@dimen/ink_screen_margin"
+            android:paddingTop="@dimen/ink_space_3"
+            android:paddingBottom="@dimen/ink_space_3">
+
+            <TextView
+                android:id="@+id/pairHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tg_section_paired"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption.Emphasis" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_2"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/pairValue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.InkDeck.MonoUi" />
+
+                <TextView
+                    android:id="@+id/pairBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tg_paired_allowlisted"
+                    android:visibility="gone"
+                    android:textAppearance="@style/TextAppearance.InkDeck.Caption.Emphasis" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/pairHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_1"
+                android:visibility="gone"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+        </LinearLayout>
+
+        <!-- Warning: bordered, never tinted (design.md §12) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ink_screen_margin"
+            android:layout_marginEnd="@dimen/ink_screen_margin"
+            android:layout_marginBottom="@dimen/ink_space_3"
+            android:background="@drawable/bg_warning"
+            android:padding="@dimen/ink_card_padding"
+            android:text="@string/tg_warning"
+            android:textAppearance="@style/TextAppearance.InkDeck.Body" />
+
+        <!-- Auto-delete -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="@dimen/ink_screen_margin"
+            android:paddingBottom="@dimen/ink_space_3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tg_autodelete_label"
+                    android:textAppearance="@style/TextAppearance.InkDeck.Body" />
+
+                <dev.inkdeck.eink.widget.SegmentedControl
+                    android:id="@+id/toggleAutoDelete"
+                    android:layout_width="160dp"
+                    android:layout_height="@dimen/ink_touch_min" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_1"
+                android:text="@string/tg_autodelete_detail"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <!-- Command reference -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="@dimen/ink_screen_margin"
+            android:paddingTop="@dimen/ink_space_3"
+            android:paddingBottom="@dimen/ink_space_3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tg_section_commands"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption.Emphasis" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_2"
+                android:text="@string/tg_commands"
+                android:textAppearance="@style/TextAppearance.InkDeck.MonoUi" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ink_space_2"
+                android:text="@string/tg_commands_due"
+                android:textAppearance="@style/TextAppearance.InkDeck.Caption" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ink_divider"
+            android:background="@color/ink_200" />
+
+        <!-- Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/ink_screen_margin"
+            android:paddingEnd="@dimen/ink_screen_margin"
+            android:paddingTop="@dimen/ink_space_4">
+
+            <dev.inkdeck.eink.widget.EinkButton
+                android:id="@+id/actionRepair"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/ink_touch_min"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/ink_space_2" />
+
+            <dev.inkdeck.eink.widget.EinkButton
+                android:id="@+id/actionDisconnect"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/ink_touch_min"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</dev.inkdeck.eink.widget.EinkScrollView>

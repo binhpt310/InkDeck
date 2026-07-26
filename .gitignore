@@ -1,0 +1,18 @@
+.gradle/
+build/
+local.properties
+.einknav/
+*.iml
+.idea/
+.kotlin/
+
+# Never commit key material. The vault is on-device only; this guards against a stray copy.
+*.pem
+*.ppk
+vault/
+
+# .env is a transport for pushing secrets onto the device (see AdbImport). It holds real API
+# tokens, so it must never reach the repo — this matters more now the repo is going public.
+.env
+*.env
+!*.env.example

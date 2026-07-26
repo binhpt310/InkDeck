@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Plan.md §5.1. Note what is NOT here: SCHEDULE_EXACT_ALARM. That permission arrived in
+      API 31, and this app targets 28, so setExactAndAllowWhileIdle needs nothing declared.
+      Raising targetSdk past 30 would make this a permission-gated feature overnight.
+    -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Plan.md §0: the ROM's MOGU_KILL_APP sweep force-stops apps, which drops every alarm. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <application>
+
+        <receiver
+            android:name=".alarm.ReminderReceiver"
+            android:exported="false" />
+
+        <!--
+          Runs only while at least one reminder is armed. See the class doc: on this ROM the
+          OEM MOGU sweep force-stops cached processes ~30 s after boot, and a force-stop
+          cancels every alarm the package owns.
+        -->
+        <service
+            android:name=".alarm.ReminderGuardService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!--
+          Re-arms after reboot: AlarmManager holds nothing across a restart. directBootAware is
+          false deliberately — the database is in credential-encrypted storage and cannot be
+          read before first unlock, so firing early would only produce empty notifications.
+        -->
+        <receiver
+            android:name=".alarm.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App shell — design.md §6.
+
+  The OEM status bar sits above this and is not ours. Content area is 572 × 731 dp portrait,
+  of which this chrome takes 56 dp at the top and 56 dp at the bottom.
+-->
+<dev.inkdeck.eink.widget.AppBoundsLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_bar_height">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/ink_screen_margin"
+            android:textAppearance="@style/TextAppearance.InkDeck.Title1" />
+
+        <dev.inkdeck.eink.widget.EinkIconButton
+            android:id="@+id/actionFlush"
+            android:layout_width="@dimen/ink_touch_min"
+            android:layout_height="@dimen/ink_touch_min"
+            android:layout_gravity="end|center_vertical"
+            android:contentDescription="@string/action_flush" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_divider"
+        android:background="@color/ink_200" />
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_divider"
+        android:background="@color/ink_200" />
+
+    <dev.inkdeck.ui.TabBar
+        android:id="@+id/tabBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ink_bar_height" />
+
+</dev.inkdeck.eink.widget.AppBoundsLinearLayout>

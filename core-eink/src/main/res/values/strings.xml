@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ink_page_up">Page up</string>
+    <string name="ink_page_down">Page down</string>
+    <string name="ink_retry">Retry</string>
+    <string name="ink_loading">Loading…</string>
+    <string name="ink_cancel">Cancel</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Light theme ramp — design.md §2.1. Five steps is deliberate: a wider ramp collapses into
+  indistinguishable greys after the panel dithers it.
+
+  Hard rule: text is ink_900 / ink_700 / ink_500 only. ink_300 and ink_200 are borders and
+  dividers. On a reflective panel with no frontlight, ink_300 text is invisible in poor light.
+-->
+<resources>
+    <color name="ink_900">#FF000000</color>  <!-- 21.0:1 on paper — body, primary text, icons, borders -->
+    <color name="ink_700">#FF3A3A3A</color>  <!-- 11.4:1 — secondary text, active chart stroke -->
+    <color name="ink_500">#FF6B6B6B</color>  <!--  5.3:1 — tertiary text, captions. Lowest legal for text -->
+    <color name="ink_300">#FFA8A8A8</color>  <!--  2.4:1 — NEVER text. Borders, disabled outlines -->
+    <color name="ink_200">#FFC8C8C8</color>  <!--  1.7:1 — NEVER text. Dividers, grid lines -->
+    <color name="paper">#FFFFFFFF</color>
+
+    <color name="ink_transparent">#00000000</color>
+</resources>
