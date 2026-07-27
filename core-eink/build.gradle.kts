@@ -19,6 +19,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        // Phase 9 item 1: lets EinkRefresher keep its per-partial `Log.v` only in debug builds.
+        // Release stays quiet — the refresh audit trail is interesting while tuning the ghost
+        // budget, not while reading a book.
+        buildConfig = true
+    }
 }
 
 kotlin {

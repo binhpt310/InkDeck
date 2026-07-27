@@ -21,6 +21,8 @@
     <string name="menu_awake">Awake</string>
     <string name="menu_files">Files</string>
     <string name="menu_telegram">Telegram</string>
+    <string name="menu_font">Aa</string>
+    <string name="menu_font_toast">Terminal size: %1$d sp</string>
     <string name="menu_awake_on">Screen will stay on.</string>
     <string name="menu_awake_off">Screen can sleep again.</string>
     <string name="menu_terminal_only">Open the Terminal tab first.</string>

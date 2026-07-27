@@ -109,6 +109,14 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    // Phase 9 item 7: show the StepBar in each pane until the board's first real
+                    // emission. Cleared by [render] on every subsequent emit too — a re-emit
+                    // (e.g. after a task toggle) is a real result, never a loading state.
+                    viewModel.isFirstEmit.collect { first ->
+                        panes.forEach { it.view.loading = first }
+                    }
+                }
                 launch { viewModel.board.collect { render(it) } }
                 launch {
                     viewModel.rolled.collect { rolled ->

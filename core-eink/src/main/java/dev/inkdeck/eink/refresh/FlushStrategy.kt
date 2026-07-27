@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -42,17 +44,27 @@ const val PANEL_FRAME_MS = 63L
  * Whatever services it sits below the app framework (the Allwinner `aw_display` /
  * `com.softwinner.IDisplayService` path is the likely candidate) and is invisible to `dumpsys`.
  * The lesson for this device: the resolver table is not evidence of absence.
+ *
+ * **Phase 9 item 4 — off the UI thread.** `sendBroadcast` is a binder call. Done on the caller's
+ * thread it can take a millisecond or more; in a flurry of `[F]` events (four task toggles in
+ * a row, a tab switch fired from a click handler, a long-press flush) it serialises everything
+ * on the main thread for no benefit. We post the send to the main `Handler` and invoke
+ * `onComplete` after the post runs, which keeps the call contract synchronous from the
+ * refresher's point of view while taking the IPC off the click-handler critical path.
  */
 class BroadcastFlush(context: Context) : FlushStrategy {
 
     private val appContext = context.applicationContext
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     override val id = "broadcast"
 
     override fun flush(activity: Activity, onComplete: (() -> Unit)?) {
-        appContext.sendBroadcast(Intent(ACTION_EINK_FORCE_REFRESH))
-        Log.d(REFRESH_LOG, "flush strategy=broadcast action=$ACTION_EINK_FORCE_REFRESH")
-        onComplete?.invoke()
+        mainHandler.post {
+            appContext.sendBroadcast(Intent(ACTION_EINK_FORCE_REFRESH))
+            Log.d(REFRESH_LOG, "flush strategy=broadcast action=$ACTION_EINK_FORCE_REFRESH")
+            onComplete?.invoke()
+        }
     }
 }
 

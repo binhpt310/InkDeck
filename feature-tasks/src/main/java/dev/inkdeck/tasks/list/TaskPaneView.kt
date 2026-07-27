@@ -51,6 +51,7 @@ class TaskPaneView @JvmOverloads constructor(
 
     private val header = HeaderView(context)
     private val list = EinkRecyclerView(context)
+    private val loadingBar = dev.inkdeck.eink.widget.StepBar(context)
     private val adapter: CompactAdapter
 
     private var onToggle: (Task) -> Unit = {}
@@ -68,6 +69,20 @@ class TaskPaneView @JvmOverloads constructor(
         list.adapter = adapter
         list.clipToPadding = true
         addView(list, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
+
+        // StepBar floats over the (hidden) list while loading. Wrap in a frame so it centres.
+        loadingBar.visibility = View.GONE
+        val loadHolder = android.widget.FrameLayout(context).apply {
+            addView(
+                loadingBar,
+                android.widget.FrameLayout.LayoutParams(
+                    EinkTheme.dp(context, 120f).toInt(),
+                    EinkTheme.dp(context, 12f).toInt(),
+                    android.view.Gravity.CENTER,
+                ),
+            )
+        }
+        addView(loadHolder, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
     }
 
     fun setCallbacks(toggle: (Task) -> Unit, open: (Task) -> Unit) {
@@ -79,7 +94,24 @@ class TaskPaneView @JvmOverloads constructor(
         header.label = label
         header.count = tasks.size
         adapter.submit(tasks, emptyText)
+        // A real emission always clears the loading bar; the loading bar is also cleared on the
+        // first emit even if the resulting list is empty (an empty pane is still a result).
+        loading = false
     }
+
+    /**
+     * Phase 9 item 7. While [loading] is true the list is hidden and a centred [StepBar] is
+     * shown — design.md §5.7's LOADING silhouette for the tasks board. Four panes loading at
+     * once would otherwise flash empty for the few hundred ms Room takes to deliver on first
+     * subscription.
+     */
+    var loading: Boolean = false
+        set(value) {
+            field = value
+            list.visibility = if (value) View.GONE else View.VISIBLE
+            loadingBar.visibility = if (value) View.VISIBLE else View.GONE
+            invalidate()
+        }
 
     /** `TODAY   3` — caption weight, count right-aligned so the eye can scan the column. */
     private class HeaderView(context: Context) : View(context) {

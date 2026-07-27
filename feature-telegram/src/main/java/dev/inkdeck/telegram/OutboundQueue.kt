@@ -84,7 +84,11 @@ internal object OutboundQueue {
         }
 
         write(context, entries)
-        Log.i(TAG, "outbound queued key=$key depth=${entries.size}")
+        // Phase 9 item 6: was Log.i on every enqueue. The queue drains at the top of every poll
+        // cycle (Plan §5.1e), so a single reminder can produce one queued-log + one drain-log +
+        // one sent-log in close succession. Demoted to Log.d so the audit trail survives in
+        // `logcat -d` without drowning live observation.
+        Log.d(TAG, "outbound queued key=$key depth=${entries.size}")
         return true
     }
 
@@ -108,7 +112,10 @@ internal object OutboundQueue {
         val pending = synchronized(this) { read(context, System.currentTimeMillis()) }
         if (pending.isEmpty()) return 0
 
-        Log.i(TAG, "outbound drain start depth=${pending.size}")
+        // Phase 9 item 6: drain start/sent are routine; promote to Log.d so a busy reminder
+        // channel does not flood Log.i. The "drain stopped after N" line is unchanged — that is
+        // the actual signal of a stuck network, and is the one a reader of the log wants.
+        Log.d(TAG, "outbound drain start depth=${pending.size}")
         var sent = 0
         for (entry in pending) {
             if (!send(entry.text)) {
@@ -118,7 +125,7 @@ internal object OutboundQueue {
             synchronized(this) { remove(context, entry.key) }
             sent++
         }
-        if (sent > 0) Log.i(TAG, "outbound drain sent=$sent")
+        if (sent > 0) Log.d(TAG, "outbound drain sent=$sent")
         return sent
     }
 
@@ -158,8 +165,10 @@ internal object OutboundQueue {
         val live = parsed.filter { now - it.at <= TTL_MS }
         if (live.size != parsed.size) {
             // Key and age only. The text is a task title and does not belong in logcat.
+            // Phase 9 item 6: was Log.i; the prune is on a per-read basis and fires for every
+            // entry older than TTL_MS each time the queue is read. Demoted to Log.d.
             parsed.filterNot { it in live }.forEach {
-                Log.i(TAG, "outbound expired key=${it.key} age=${(now - it.at) / 60_000}min")
+                Log.d(TAG, "outbound expired key=${it.key} age=${(now - it.at) / 60_000}min")
             }
             write(context, live)
         }

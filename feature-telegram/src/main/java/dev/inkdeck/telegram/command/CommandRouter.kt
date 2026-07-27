@@ -71,7 +71,10 @@ internal class CommandRouter(
         }
         if (update.chatId != paired) {
             // Not even a log of the text: an unpaired chat's message is somebody else's content.
-            Log.i(TAG, "ignored a message from an unpaired chat")
+            // Phase 9 item 6: was Log.i. Fires on every probe by a non-paired chat. Demoted to
+            // Log.v so the post-pair "this stranger just talked at us" signal is recoverable
+            // from `logcat -d` but not visible in a normal `logcat` tail.
+            Log.v(TAG, "ignored a message from an unpaired chat")
             return
         }
 
@@ -107,7 +110,10 @@ internal class CommandRouter(
     private fun tryPair(update: TelegramClient.Update, vault: SecretVault) {
         val text = update.text.trim()
         if (!text.lowercase(Locale.US).startsWith("/pair")) {
-            Log.i(TAG, "ignored a non-/pair message while unpaired")
+            // Phase 9 item 6: was Log.i. Fires on every non-/pair message in any chat before the
+            // device has been paired. Demoted to Log.v — the relevant signal is the eventual
+            // pair attempt, not the noise before it.
+            Log.v(TAG, "ignored a non-/pair message while unpaired")
             return
         }
 

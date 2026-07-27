@@ -58,6 +58,8 @@ class ReminderGuardService : Service() {
         // This — not AlarmManager — is what actually delivers reminders here. See ReminderTicker
         // for the measurement behind that.
         ticker.start()
+        // Phase 9 item 8: log the service boundary for the 8 h drain measurement.
+        dev.inkdeck.eink.debug.IdleProbe.serviceStarted("ReminderGuardService")
 
         // NOT_STICKY on purpose: a force-stop does not honour START_STICKY anyway, and every
         // path that should bring the service back (boot, app start, a task edit) already calls
@@ -67,6 +69,7 @@ class ReminderGuardService : Service() {
 
     override fun onDestroy() {
         ticker.stop()
+        dev.inkdeck.eink.debug.IdleProbe.serviceStopped("ReminderGuardService")
         super.onDestroy()
     }
 

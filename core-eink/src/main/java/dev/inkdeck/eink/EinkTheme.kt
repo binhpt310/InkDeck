@@ -1,6 +1,7 @@
 package dev.inkdeck.eink
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Typeface
 import android.util.TypedValue
@@ -15,6 +16,9 @@ import androidx.core.content.ContextCompat
  * through the same night-mode qualifier. Nothing in the app should hardcode a grey.
  */
 object EinkTheme {
+
+    private const val PREFS = "inkdeck.theme"
+    private const val KEY_DARK = "inkdeck.theme.dark"
 
     @ColorInt fun ink900(c: Context): Int = ContextCompat.getColor(c, R.color.ink_900)
     @ColorInt fun ink700(c: Context): Int = ContextCompat.getColor(c, R.color.ink_700)
@@ -46,10 +50,30 @@ object EinkTheme {
      * design.md §2.2: dark is offered because it was requested, and defaults off. Driving most
      * pixels black increases ghosting and, with no frontlight on this device, reads worse in
      * dim light rather than better.
+     *
+     * Phase 9 item 5: the choice now persists in app-private SharedPreferences so it survives
+     * process restart. The recreate-drops-SSH problem is **not** fixed here — see the comment on
+     * MainActivity.toggleTheme and Plan §12 item 8.
      */
-    fun applyDark(enabled: Boolean) {
+    fun applyDark(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean(KEY_DARK, enabled).apply()
         AppCompatDelegate.setDefaultNightMode(
             if (enabled) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
+
+    /**
+     * Apply whatever the user picked last, defaulting to light. Call from `Application.onCreate`
+     * before any Activity is created — `setDefaultNightMode` re-creates the current Activity
+     * and the rest of the app will not get a second chance to call this.
+     */
+    fun restorePersisted(context: Context) {
+        val dark = prefs(context).getBoolean(KEY_DARK, false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (dark) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
+
+    private fun prefs(context: Context): SharedPreferences =
+        context.applicationContext.getSharedPreferences(PREFS, 0)
 }

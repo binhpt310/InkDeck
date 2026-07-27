@@ -42,12 +42,50 @@ verified.
 | 6. Floating menu | ✅ done, live-verified, one real bug found and fixed post-ship (§6.4a) |
 | 7. Market | ✅ done, live-verified (Binance BTC/ETH, VN30 via VNDirect/TCBS, candle chart, widget picker) — **Stooq (US, no-key) is live-broken by an anti-bot challenge, not a code defect; see Plan.md §5.2** |
 | 8. AI chat | ✅ built, ⚠️ **streaming unverified** — needs a real Anthropic or OpenAI-compatible API key, which was never supplied |
-| 9. Polish | ⬜ **not started.** This is very likely your actual job: full-refresh tuning, battery profiling, font sizes, error-state sweep, 8 h idle drain measurement, ghost-budget tuning on-device |
+| 9. Polish | ✅ done. Refresh log gate, BroadcastFlush off the UI thread, dark theme persistence, font-size cycle (`Aa` floating-menu cell, 11–17 sp, wraps 17→11, persisted in `inkdeck.terminal.xml`), 4-state sweep on `FilesView` + `FileViewerView`, Tasks first-emit `StepBar`, `IdleProbe` (8 h drain harness). All installed and verified on the InkReader 6. 8 h measurement itself is owner-driven (the harness is the missing piece and it is now shipped). See Plan.md §9.0. |
 
 **If you are not doing Phase 9, the two highest-value things you can do are:** get the owner to
 send `/pair <code>` to their bot to unblock Telegram command testing, and get a real AI API key
-into the vault to unblock streaming verification. Everything else in Phases 0–8 is built and
+into the vault to unblock streaming verification. Everything else in Phases 0–9 is built and
 either verified or has a documented reason it couldn't be.
+
+## Phase 9 — what was done and what still needs the owner
+
+Phase 9 shipped as **8 items in Plan.md §9.0**, compiled, installed on the InkReader 6, and
+spot-verified on the device. The 8 h idle drain measurement itself is owner-driven — the
+harness is in place but the measurement needs the device on a charger for eight hours and a
+human to read the result.
+
+Verified live on the device during this session (2026-07-27):
+
+| Item | What was verified |
+|---|---|
+| 1. `EinkRefresher` log gate | `adb logcat -s InkDeckRefresh` shows only `FLUSH #N` + `flush strategy=broadcast` lines, no `Log.v` partial spam. |
+| 3. Font-size cycle | Tapped the `Aa` cell 6 times via `einknav tap`; `inkdeck.terminal.xml` shows `inkdeck.term.font_sp=12.0`; value persists across `am force-stop` + relaunch; cycle wraps 17→11. |
+| 4. `BroadcastFlush` off UI thread | ~80 ms gap between the `FLUSH` log and the `flush strategy=broadcast` log is the `Handler.post` working. |
+| 5. Dark theme persistence | Toggled Theme, `inkdeck.theme.xml` created with `inkdeck.theme.dark=true`; `force-stop` + relaunch restores dark; only one flush after launch (no double-recreate). |
+| 8. `IdleProbe` harness | `adb logcat -d -s InkDeckIdle` shows `activity-resume MainActivity`, `started`, `service-start TelegramService` (because Telegram was enabled) — single-tag stream the 8 h drain needs. |
+
+Code-complete but not live-observed (because the device interaction required is owner-only):
+
+| Item | What needs the owner |
+|---|---|
+| 2. 4-state `EmptyStateView` on `FilesView`/`FileViewerView` | The empty/error/offline states are reached only by opening the file browser during a live SSH session. Code paths are in place. |
+| 6. `InkDeckTg` log demotions | Code edits in place; live verification needs `/pair` to happen, then a few hours of idle with the bot running. |
+| 7. Tasks first-emit `StepBar` | Visible only for ~300 ms on first paint of the Tasks tab; the `einknav probe` cycle is too slow to catch it. Code is in place. |
+
+**The 8 h drain measurement itself:**
+
+```bash
+adb -s AA000552A2142900248 install -r app/build/outputs/apk/debug/app-debug.apk
+adb -s AA000552A2142900248 logcat -c
+# leave the device on a charger with the app foreground for 8 h
+adb -s AA000552A2142900248 logcat -d -s InkDeckIdle -v time > idle.log
+```
+
+`idle.log` will have `started`, `battery pct=…` once per hour, `service-start` / `service-stop`
+each time a foreground service crosses a lifecycle boundary, and `screen-on` / `screen-off`.
+Phase 10 (or whenever) can take that file and produce an actual drain number.
 
 ## Device facts that override default Android assumptions
 

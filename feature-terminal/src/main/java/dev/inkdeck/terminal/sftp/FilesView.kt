@@ -17,6 +17,7 @@ import dev.inkdeck.eink.refresh.EinkRefresher
 import dev.inkdeck.eink.widget.EinkButton
 import dev.inkdeck.eink.widget.EinkIconButton
 import dev.inkdeck.eink.widget.EinkRecyclerView
+import dev.inkdeck.eink.widget.EmptyStateView
 import dev.inkdeck.terminal.R
 
 /**
@@ -62,7 +63,11 @@ class FilesView @JvmOverloads constructor(
     private val crumbScroll = HorizontalScrollView(context)
     private val list = EinkRecyclerView(context)
     private val adapter = FileAdapter()
-    private val emptyLabel = TextView(context)
+    // Phase 9 item 2: the bare `emptyLabel: TextView` is gone. The four-state `EmptyStateView`
+    // replaces it (design.md §5.7) and the `state` field below is the source of truth for what
+    // the listing area is currently showing. The list and the empty view are siblings; exactly
+    // one of them is `VISIBLE`.
+    private val stateView = EmptyStateView(context)
 
     private val dividerPaint = Paint().apply {
         color = EinkTheme.ink200(context)
@@ -88,13 +93,10 @@ class FilesView @JvmOverloads constructor(
         }
         addView(list, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
 
-        emptyLabel.apply {
-            setTextAppearance(dev.inkdeck.eink.R.style.TextAppearance_InkDeck_Caption)
-            gravity = Gravity.CENTER
-            visibility = GONE
-            setPadding(space(4), space(6), space(4), space(6))
-        }
-        addView(emptyLabel, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+        // Sibling to `list`. Exactly one is visible at a time; the list covers the full content
+        // area, the state view is a centred glyph + title + detail + optional retry button.
+        addView(stateView, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
+        showLoading()
 
         addView(divider(), LayoutParams(LayoutParams.MATCH_PARENT, dividerHeight()))
         addView(buildActions(), LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
@@ -118,23 +120,30 @@ class FilesView @JvmOverloads constructor(
 
     fun open(path: String? = null) {
         val b = browser ?: return
+        showLoading()
         b.list(
             path,
             onResult = { resolved, entries -> render(resolved, entries) },
             onError = { message ->
                 // Leave the breadcrumb showing where we actually still are, not where the failed
-                // attempt was headed.
+                // attempt was headed. The toast is the human-readable signal; the structured
+                // OFFLINE state is the *what to do next* affordance (Retry button).
                 renderBreadcrumb(b.path)
                 listener?.onError(message)
+                showOffline()
             },
         )
     }
 
     fun refresh() {
         val b = browser ?: return
+        showLoading()
         b.refresh(
             onResult = { resolved, entries -> render(resolved, entries) },
-            onError = { listener?.onError(it) },
+            onError = { message ->
+                listener?.onError(message)
+                showOffline()
+            },
         )
     }
 
@@ -142,11 +151,53 @@ class FilesView @JvmOverloads constructor(
 
     private fun render(path: String, entries: List<SftpBrowser.Entry>) {
         renderBreadcrumb(path)
-        adapter.submit(entries)
-        emptyLabel.visibility = if (entries.isEmpty()) VISIBLE else GONE
-        emptyLabel.text = context.getString(R.string.files_empty)
+        if (entries.isEmpty()) {
+            adapter.submit(entries)
+            showEmpty()
+        } else {
+            adapter.submit(entries)
+            showList()
+        }
         // A whole new listing replaces the viewport, so §13 makes it [F].
         refresher?.flush("sftp-list")
+    }
+
+    // ---------------------------------------------------------------- state
+
+    private fun showList() {
+        list.visibility = VISIBLE
+        stateView.visibility = GONE
+    }
+
+    private fun showLoading() {
+        list.visibility = GONE
+        stateView.visibility = VISIBLE
+        stateView.show(
+            state = EmptyStateView.State.LOADING,
+            title = context.getString(R.string.files_loading),
+        )
+    }
+
+    private fun showEmpty() {
+        list.visibility = GONE
+        stateView.visibility = VISIBLE
+        stateView.show(
+            state = EmptyStateView.State.EMPTY,
+            title = context.getString(R.string.files_empty_title),
+            detail = context.getString(R.string.files_empty_detail),
+        )
+    }
+
+    private fun showOffline() {
+        list.visibility = GONE
+        stateView.visibility = VISIBLE
+        stateView.show(
+            state = EmptyStateView.State.OFFLINE,
+            title = context.getString(R.string.files_offline_title),
+            detail = context.getString(R.string.files_offline_detail),
+            actionLabel = context.getString(R.string.files_error_action),
+            onAction = { refresh() },
+        )
     }
 
     // ---------------------------------------------------------------- chrome

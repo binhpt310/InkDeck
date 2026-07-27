@@ -8,9 +8,9 @@ class InkDeckApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // design.md §2.2: dark is opt-in and starts off. Persisting the user's choice arrives
-        // with the floating menu in Phase 6; until then this pins the documented default rather
-        // than inheriting whatever the OEM has set system-wide.
-        EinkTheme.applyDark(false)
+        // design.md §2.2: dark is opt-in and starts off. Persisting the user's choice arrived
+        // with the floating menu in Phase 6, and Phase 9 item 5 reads it back here. The default
+        // for a fresh install is light, recorded in EinkTheme.restorePersisted.
+        EinkTheme.restorePersisted(this)
     }
 }

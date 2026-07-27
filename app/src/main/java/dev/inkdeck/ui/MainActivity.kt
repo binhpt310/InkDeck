@@ -12,6 +12,7 @@ import dev.inkdeck.databinding.ActivityMainBinding
 import dev.inkdeck.eink.EinkAnim
 import dev.inkdeck.eink.EinkGeometry
 import dev.inkdeck.eink.EinkTheme
+import dev.inkdeck.eink.debug.IdleProbe
 import dev.inkdeck.eink.refresh.EinkRefresher
 import dev.inkdeck.eink.refresh.FlushStrategies
 import dev.inkdeck.eink.refresh.RefresherHost
@@ -123,6 +124,14 @@ class MainActivity : AppCompatActivity(), RefresherHost {
         // reconnect strategy; TelegramGraph.startIfEnabled is idempotent against an already-live
         // loop, so this is cheap when nothing was actually killed.
         TelegramGraph.startIfEnabled(this)
+        // Phase 9 item 8: idle drain harness. Guarded by BuildConfig.DEBUG inside the probe.
+        IdleProbe.activityResumed("MainActivity")
+        IdleProbe.start(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        IdleProbe.activityPaused("MainActivity")
     }
 
     override fun onNewIntent(intent: android.content.Intent?) {
@@ -208,6 +217,13 @@ class MainActivity : AppCompatActivity(), RefresherHost {
         FloatingMenu.Item(R.drawable.ic_menu_telegram, getString(R.string.menu_telegram)) {
             openTelegramSettings()
         },
+        // Phase 9 item 4: terminal font-size cycle. The 3×3 grid is now over its designed
+        // capacity (FloatingMenu scrolls beyond 9 items), so this slots in without displacing
+        // anything. See Plan §12 item 2 for the trade-off and the owner's call to retire one
+        // cell if 3×3 is non-negotiable.
+        FloatingMenu.Item(R.drawable.ic_menu_font, getString(R.string.menu_font)) {
+            cycleTerminalFont()
+        },
     )
 
     private fun terminalFragment(): TerminalFragment? =
@@ -265,6 +281,22 @@ class MainActivity : AppCompatActivity(), RefresherHost {
     }
 
     /**
+     * Phase 9 item 4. Hands the cycle to the terminal fragment (the only place that owns a
+     * `TerminalView`), then reports the new size in sp. The fragment is null when the user taps
+     * the cell before opening the tab once — the `Aa` cell still works in that state, switching
+     * to the terminal and applying the size, because `cycleFontSize` is called after the tab is
+     * selected. We select first to be sure the fragment view exists.
+     */
+    private fun cycleTerminalFont() {
+        selectTab(tabs.indexOfFirst { it.tag == "terminal" })
+        val fragment = terminalFragment() ?: return
+        fragment.cycleFontSize { sizeSp ->
+            toast(getString(R.string.menu_font_toast, sizeSp.toInt()))
+            refresher.flush("font-cycle=$sizeSp")
+        }
+    }
+
+    /**
      * design.md §11.3 `⟳ Rotate`: portrait → landscape → reverse portrait → reverse landscape.
      * App-owned because adb `user_rotation` cannot rotate a portrait-locked activity, and the
      * device has no reliable rotation gesture.
@@ -294,20 +326,21 @@ class MainActivity : AppCompatActivity(), RefresherHost {
      * Switching night mode recreates the Activity, which destroys the Fragment holding the SSH
      * session. Rather than dropping a live connection silently, say so and let the user decide.
      *
-     * The proper fix is to hoist SshSession into a ViewModel so it survives recreation — worth
-     * doing, and not something to bolt on while wiring a menu.
+     * The proper fix is to hoist SshSession into a ViewModel so it survives recreation — that
+     * is Plan §12 item 8 (Phase 10), not a Phase 9 polish item. Phase 9 item 5 only persists
+     * the choice so it survives process restart.
      */
     private fun toggleTheme() {
         val goingDark = !EinkTheme.isDark(this)
         val live = terminalFragment()?.hasLiveSession() == true
         if (!live) {
-            EinkTheme.applyDark(goingDark)
+            EinkTheme.applyDark(this, goingDark)
             return
         }
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle(R.string.menu_theme)
             .setMessage(R.string.menu_theme_disconnects)
-            .setPositiveButton(R.string.menu_theme_switch) { _, _ -> EinkTheme.applyDark(goingDark) }
+            .setPositiveButton(R.string.menu_theme_switch) { _, _ -> EinkTheme.applyDark(this, goingDark) }
             .setNegativeButton(R.string.action_cancel_generic, null)
             .show()
             .also { it.window?.setWindowAnimations(0) }

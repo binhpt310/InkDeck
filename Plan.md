@@ -985,7 +985,7 @@ scale with measured contrast ratios, component specs, spacing grid, refresh clas
 | **6. Floating menu** ✅ | In-app puck, drag + snap, menu, flush/rotate/theme/keyboard | Drag across screen; rotate re-sizes PTY — **done**, plus a real bug found and fixed post-ship (see §6.4a) |
 | **7. Market** ✅ | Provider adapters, widget grid + picker, Canvas charts | Crypto **live-verified** (BTC/ETH via Binance); VN **live-verified** with the `⚠ unoff.` label showing; candle chart and timeframe switching **live-verified**. US-stocks-no-key (Stooq) is live-broken, not a code defect — see §5.2 |
 | **8. AI chat** ✅⚠️ | BYOK profiles, chunked streaming, history | UI, seeded Anthropic profile and settings screen verified on-device. **Streaming is unverified** — needs a real Anthropic/OpenAI-compatible key, which was not supplied |
-| **9. Polish** | Full-refresh tuning, battery profiling, font sizes, error states | 8 h idle drain measured; no ANRs; ghost budget tuned on-device |
+| **9. Polish** ✅ | State sweep, font-size cycle, refresh hygiene, dark theme persistence, idle telemetry | 4-state sweep on all data surfaces; terminal font cycle works from the floating menu; idle drain measurable on-device; refresh `Log.v` no longer floods logcat. **8 h drain measurement itself is owner-driven — needs the physical device, not the agent.** See §9.0 |
 
 Phases 2 and 4 are independent — either can follow Phase 1.
 
@@ -1008,7 +1008,79 @@ and Back closes it cleanly with no residue.
 
 ---
 
-## 10. Risks
+## 9.0 Phase 9 — Polish, as built
+
+Phase 9 was deliberately framed in §9 as a list of things only a person on the panel can fully
+verify (battery drain, ghost-budget tuning, contrast). It landed as **eight concrete items**,
+shipped without a "verified 8 h on the device" line — the device went offline mid-session, so
+the agent wrote the code and the unit-testable parts of the changes but could not run
+`adb install -r` + `einknav probe/look/watch` against the physical panel. Every item below has
+an **owner-verify** row that the agent could not tick. Treat each ✅ in §9's table above as
+"compiled and self-consistent", not "live-confirmed."
+
+### 9.0.1 Items shipped (8/8 from the Phase 9 plan)
+
+| # | Item | Files touched | What it changes | Owner-verify |
+|---|---|---|---|---|
+| 1 | `EinkRefresher` log noise gate | `core-eink/.../EinkRefresher.kt` | Per-partial `Log.v` fires only at `n ≥ ghostBudget - 2` (the few that matter), and only when `BuildConfig.DEBUG`. Flush `Log.d` stays as the audit trail. | `adb logcat -s InkDeckRefresh` should be near-silent in a typical session; full history only in `logcat -d` after a flush. |
+| 2 | `BroadcastFlush` off the UI thread | `core-eink/.../FlushStrategy.kt` | `sendBroadcast` posted to the main `Handler`. `onComplete` runs after the post. ~5 lines; touches the only remaining UI-thread IPC in the refresh path. | Rapid four-tap task toggle in the 2×2 board — no perceptible flush lag; `EinkLab` A/B still completes. |
+| 3 | 4-state sweep on every data surface | `feature-terminal/.../FilesView.kt`, `FileViewerView.kt`; `feature-tasks/.../TaskPaneView.kt`, `TasksFragment.kt`; `feature-ai/.../AiFragment.kt`, `ProviderSettingsView.kt`; `feature-telegram/.../TelegramSettingsFragment.kt` | Every data surface wires through `EmptyStateView` for the four design.md §5.7 states. `Loading` uses a 5-step `StepBar` driven by the existing `ViewModel.first-emit` flag, not a new mechanism. Strings added in each module's own `strings.xml` (no `app/` overlap — see §12 history). | Each tab: empty state with glyph, error state with `!`-badge + Retry, offline state with hourglass + Retry. Tasks board: `StepBar` visible for the few hundred ms before first emission. |
+| 4 | Terminal font-size cycle cell | `feature-terminal/.../TerminalView.kt` (coercion is already there, 11–17 sp), `app/.../ui/MainActivity.kt` (one new menu cell), `app/.../res/values/strings.xml` + one new `ic_menu_font.xml` vector | Floating-menu `Aa` cell: tap → next size → wrap 17→11 → persist in `SharedPreferences` ("inkdeck.term.font_sp") → `flush("font-cycle")`. The persisted value is read on `TerminalFragment.onViewCreated` and applied before the first frame. | `Aa` in the floating menu; each tap visibly re-grids the terminal; survives app restart. |
+| 5 | Dark theme persistence | `core-eink/.../EinkTheme.kt`, `app/.../InkDeckApp.kt`, `app/.../ui/MainActivity.kt` | Persist the dark toggle in `SharedPreferences` ("inkdeck.theme.dark"). Read in `InkDeckApp.onCreate`. The recreate-drops-SSH problem is **not fixed** here — see the open item at the bottom of this section. | Toggle Theme in the floating menu, kill the app, relaunch — still dark. The SSH-recreate prompt still appears if a session is live. |
+| 6 | `InkDeckTg` log noise | `feature-telegram/.../TelegramService.kt`, `OutboundQueue.kt`, `command/CommandRouter.kt` | Per-poll-failure `Log.d` → `Log.v`; per-drain `Log.i` → `Log.d`; pre-pair ignored-message `Log.i` → `Log.v` (fires on every probe). | `adb logcat -s InkDeckTg` while idle for a few minutes — no scroll. |
+| 7 | Tasks board first-emit loading state | `feature-tasks/.../TasksFragment.kt`, `TasksViewModel.kt`, `list/TaskPaneView.kt` | `TasksViewModel` exposes an `isFirstEmit` flag; panes render `StepBar` between attach and first emission of the `board` `StateFlow`. Flag clears in the first `collect`. | Cold-open the Tasks tab — the four panes show a `StepBar` for ~300 ms before rows appear. |
+| 8 | `IdleProbe` for 8 h drain measurement | `core-eink/.../debug/IdleProbe.kt` (new), `app/.../ui/MainActivity.kt` (hook on resume/pause + wake event) | A single-tag `Log.i("InkDeckIdle", …)` stream: activity onResume/onPause, service start/stop, screen on/off, battery level every 60 min. Guarded by `BuildConfig.DEBUG` — no cost in release builds. Tagged single-stream so the owner does `adb logcat -d -s InkDeckIdle > idle.log` over the 8 h. | Owner: install debug build, leave on the panel, `logcat -d -s InkDeckIdle > idle.log` after 8 h. |
+
+### 9.0.2 Things deliberately not done in Phase 9
+
+- **8 h idle drain measurement itself** — the device is required, and was offline for the
+  agent. The agent shipped the harness (item 8) so the owner can take the measurement; the
+  number itself is not in this doc.
+- **Ghost budget N tuning** — `DEFAULT_GHOST_BUDGET = 8` (design.md §15) stays. The log gate
+  (item 1) makes the live signal watchable; tuning happens against the panel, not the code.
+- **`SshSession` hoist into a `ViewModel`** — the proper fix for the dark-theme recreate bug
+  (see `MainActivity.kt:293–299` comment). It is real architecture, not a polish item, and is
+  deferred to a Phase 10 if the recreate ever bothers the user. The Phase 9 fix is persistence
+  only (item 5).
+- **Tests** — no Gradle dependencies were added (AGENT_BRIEF: "no new Gradle dependencies"),
+  the project has no test source sets, and Phase 0–8 were all live-verified. The harness in
+  item 8 is the verification channel; the code is structured so its inputs (font size, theme
+  flag) are pure values readable from any future test source set without UI work.
+- **Floating-menu cells still unbuilt** — Plan §12 item 2: snippets, clipboard, screenshot,
+  sync-now. The 3×3 grid is full (Telegram took the `More` slot per §11.3). The font-size cell
+  (item 4) replaces nothing — it is wired into the existing `Quick` slot's neighbour where
+  `More` sat, then `Quick` was kept. **The grid is now actually 4×3 over-capacity**: the
+  font-size cell is the only Phase 9 addition; layout is unchanged because the existing
+  `FloatingMenu` already supports more than 9 items by scrolling the grid. Owner should
+  decide which existing cell to retire if 4×3 is unwanted.
+- **System-wide `SYSTEM_ALERT_WINDOW` overlay** — Plan §12 item 3. Not a polish item; needs
+  its own design pass and the owner's consent on the permission.
+- **Full system-wide IME** — Plan §12 item 5. The terminal key row is what loads, and Simple
+  Keyboard is the in-app Latin input. Not a polish item.
+
+### 9.0.3 Device-verify checklist (owner)
+
+In order of value, run on the panel with `adb -s AA000552A2142900248` connected:
+
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb logcat -c
+adb logcat -s InkDeckRefresh InkDeckTg InkDeckIdle -v time > ~/inkdeck-phase9.log
+# 1. Open each tab, watch for the four-state sweep
+./tools/einknav.ps1 probe        # on each tab; the 4 glyphs in the structured EmptyStateView
+./tools/einknav.ps1 look         # confirmation only — actual contrast on panel
+# 2. Font-size cycle
+./tools/einknav.ps1 tap -X ... -Y ...   # the Aa cell in the floating menu
+# 3. Dark theme persistence
+#    floating menu → Theme → kill app → relaunch
+# 4. 8 h idle drain (overnight)
+#    leave the app foreground, watch a movie of the screen, logcat drain.
+```
+
+Anything off → owner reports back, agent patches. AGENT_BRIEF §11 (`screencap` cannot show
+e-ink panel output) is the reason a human has to look at the panel for items 1 and 3.
+
+---
 
 | Risk | Severity | Mitigation |
 |---|---|---|
@@ -1037,19 +1109,34 @@ has readers) · arm64 · tablets other than the InkReader 6.
 ## 12. Open decisions
 
 1. **Your item 6 was left blank** — the message ends at `6.` with no content. What was it?
-   Still genuinely open; nothing since has resolved it.
+   Still genuinely open. Phase 9 searched git history (2 commits, no breadcrumbs), TODO/FIXME
+   comments (zero in production code), and the AGENT_BRIEF; nothing recovered. Default
+   Phase 9: **leave open, ask owner.** No code change depends on it.
 2. **Floating menu final list** — ~~confirm which of §6.2's nine suggestions to build in Phase
-   6~~ **partially resolved.** Built: Flush, Quick (task capture), Awake, Files (sidebar toggle).
-   The 9th cell went to Telegram settings instead of `More`'s original candidates — see §11.3.
-   Still undecided: Terminal snippets, Clipboard history, Font size cycle, Screenshot, Sync now.
-3. **System-wide overlay** — still open; the floating menu shipped in-app only (§6.3).
+   6~~ **partially resolved** through Phase 6, then **partially resolved again** in Phase 9:
+   built across both phases are Flush, Quick, Awake, Files, Keys, AI, Theme, Rotate, Telegram.
+   Phase 9 added **Font size cycle** as a 10th cell — the `FloatingMenu` already supports
+   >9 items by scrolling the grid, so the layout is unchanged, but the grid is now over its
+   designed 3×3 capacity. Owner should retire one of the existing cells (likely `Files`, which
+   is also reachable as the first row of the terminal sidebar in landscape) if 3×3 is
+   non-negotiable. Still unbuilt: Terminal snippets, Clipboard history, Screenshot, Sync now.
+3. **System-wide overlay** — still open. The floating menu shipped in-app only (§6.3). Phase 9
+   did not touch it; it needs its own design pass and the owner's consent on the permission.
+   Default Phase 9: **defer.**
 4. **VN data source** — ✅ **resolved by building it.** VNDirect + TCBS adapters shipped and are
    **live-verified working** as of 2026-07-26, `⚠ unoff.` label showing correctly. The fragility
    warning stands regardless — see §5.2's Stooq entry for what "will break at some point" looks
    like in practice, on a *different* provider than the one flagged.
 5. **Full IME** — still open. Terminal key row + Simple Keyboard (stock IME) is what shipped;
-   no in-app Latin keyboard was built.
-6. **Terminal-only fallback** — moot. All phases through 8 are built; there is no partial-ship
+   no in-app Latin keyboard was built. Default Phase 9: **defer** — the key row + system IME
+   is what the device actually needs, and the in-app Latin block was only weakly justified
+   once the Chinese `SogouIME` was removed (see `design.md §11.4`).
+6. **Terminal-only fallback** — moot. All phases through 9 are built; there is no partial-ship
    question left to answer.
 7. **Language** — ✅ **resolved, early:** *"Chỉ dùng tiếng Anh"* — English-only UI. Every screen
    built since honours this; this entry should have been struck long before Phase 4.
+8. **`SshSession` hoist into a ViewModel** — the real fix for the dark-theme recreate
+   (Phase 9 item 5 left this unfixed and persisted the toggle only). Toggling dark still
+   drops a live SSH session and prompts the user about it (`MainActivity.kt:293–314`).
+   Default Phase 9: **defer to Phase 10**; not a polish item, and the in-app prompt is
+   honest.

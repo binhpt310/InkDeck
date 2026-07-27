@@ -2,6 +2,7 @@ package dev.inkdeck.eink.refresh
 
 import android.app.Activity
 import android.util.Log
+import dev.inkdeck.eink.BuildConfig
 
 /**
  * The refresh policy from Plan.md §3.4, in one place.
@@ -21,6 +22,13 @@ import android.util.Log
  * Every decision here is logged under [REFRESH_LOG]; watch it while using the app with
  *   adb logcat -s InkDeckRefresh
  * and move [ghostBudget] until ghosting is tolerable at the fewest flushes.
+ *
+ * **Phase 9 item 1 — log noise gate.** A streaming terminal calls `notePartial` dozens of times
+ * per second; logging every one at `Log.v` flooded logcat to the point that the signal (the
+ * few partials that mattered, the flushes) was lost in noise. We now log at `Log.v` only in
+ * debug builds, and only the *interesting* partials (those within two of the budget) in
+ * either build — the per-surface rate is recoverable from `flushCount` if needed. The flush
+ * audit trail at `Log.d` is unchanged.
  */
 class EinkRefresher(
     private val activity: Activity,
@@ -45,7 +53,16 @@ class EinkRefresher(
             flush("ghost-budget surface=$surface n=$n")
             return true
         }
-        Log.v(REFRESH_LOG, "partial surface=$surface n=$n/$ghostBudget $reason")
+        // The two preceding the trip are the ones the owner is actually asking about ("is the
+        // budget about to give?"), so log them at `Log.d` regardless of build. The rest are
+        // tuning noise; in release they are dropped, in debug they go to `Log.v` so a
+        //   adb logcat -s InkDeckRefresh
+        // still tells you everything.
+        if (n >= ghostBudget - 2) {
+            Log.d(REFRESH_LOG, "partial surface=$surface n=$n/$ghostBudget $reason")
+        } else if (BuildConfig.DEBUG) {
+            Log.v(REFRESH_LOG, "partial surface=$surface n=$n/$ghostBudget $reason")
+        }
         return false
     }
 

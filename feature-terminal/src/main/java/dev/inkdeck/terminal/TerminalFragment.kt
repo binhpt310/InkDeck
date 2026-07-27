@@ -66,6 +66,12 @@ class TerminalFragment : Fragment(R.layout.fragment_terminal),
         hostStore = HostStore(ctx)
         knownHosts = KnownHostsStore(ctx)
 
+        // Phase 9 item 4: apply the persisted font size before the first frame so the terminal
+        // never draws at 13 sp and then re-grids. The setter is `coerceIn(11f, 17f)` (design.md
+        // §3.2 `mono-term`) so a corrupt or older pref cannot push us outside the type scale.
+        val savedFont = ctx.getSharedPreferences(PREFS, 0).getFloat(KEY_FONT_SP, DEFAULT_FONT_SP)
+        binding.terminal.fontSizeSp = savedFont
+
         EinkAnim.strip(view)
 
         binding.btnFiles.apply {
@@ -190,6 +196,28 @@ class TerminalFragment : Fragment(R.layout.fragment_terminal),
     fun toggleKeyboardFromMenu() = toggleSoftKeyboard()
 
     fun hasLiveSession(): Boolean = session?.isConnected == true
+
+    /**
+     * Phase 9 item 4. Advances the terminal font size by [FONT_STEP_SP] and wraps at the type
+     * scale ceiling, persisting the new value. The size persists in app-private SharedPreferences
+     * so a relaunch re-applies it before the first frame (see [onViewCreated]).
+     *
+     * [onChanged] fires with the new size in sp so the host (MainActivity) can show a toast —
+     * the menu item label is `Aa` and gives no size feedback by itself.
+     */
+    fun cycleFontSize(onChanged: (Float) -> Unit) {
+        if (_binding == null) return
+        val ctx = requireContext().applicationContext
+        val prefs = ctx.getSharedPreferences(PREFS, 0)
+        val current = binding.terminal.fontSizeSp
+        val next = if (current >= FONT_MAX_SP) FONT_MIN_SP else current + FONT_STEP_SP
+        // `coerceIn(11f, 17f)` in the setter means an out-of-band value cannot break the type
+        // scale, but we apply the constrained value rather than the raw `next` so the persisted
+        // pref is always inside the documented window.
+        binding.terminal.fontSizeSp = next
+        prefs.edit().putFloat(KEY_FONT_SP, binding.terminal.fontSizeSp).apply()
+        onChanged(binding.terminal.fontSizeSp)
+    }
 
     private fun toggleFiles() = setFilesOpen(!filesOpen)
 
@@ -760,5 +788,15 @@ class TerminalFragment : Fragment(R.layout.fragment_terminal),
     private companion object {
         const val HOST_KEY_PROMPT_TIMEOUT_S = 120L
         const val REQUEST_UPLOAD = 4201
+
+        // Phase 9 item 4. The type scale window is design.md §3.2 `mono-term`; the step matches
+        // the granularity of the in-app cycle (one tap = one cell). SharedPreferences key is
+        // namespaced under `inkdeck.term.*` so future terminal preferences have a home.
+        const val PREFS = "inkdeck.terminal"
+        const val KEY_FONT_SP = "inkdeck.term.font_sp"
+        const val FONT_MIN_SP = 11f
+        const val FONT_MAX_SP = 17f
+        const val FONT_STEP_SP = 1f
+        const val DEFAULT_FONT_SP = 13f
     }
 }

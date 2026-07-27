@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Floating-menu "Aa" cell. Phase 9 item 4. Two stacked glyphs at different sizes so the
+  cell reads as "type size" at a glance without the icon-only ambiguity §11.2 warns about.
+  Both filled, no italics, no weight below 400 — the standard §14 rules apply to glyphs too.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <!-- upper-case A, large, centred upper half -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M8,3 L16,3 L21,17 L17.4,17 L16,13 L8,13 L6.6,17 L3,17 Z M9.1,10.6 L14.9,10.6 L12,4.4 Z" />
+    <!-- lower-case a, small, lower-right -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M14,19 L19,19 L19,21 L17.4,21 L17.4,20.4 C16.7,21 16,21.2 15.3,21.2 C13.6,21.2 12.6,20.1 12.6,18.5 C12.6,16.9 13.6,15.8 15.3,15.8 C16,15.8 16.7,16 17.4,16.6 L17.4,16 L19,16 L19,19 Z M15.7,19.4 C16.6,19.4 17.4,18.9 17.4,18.5 C17.4,18.1 16.6,17.6 15.7,17.6 C14.8,17.6 14.4,18 14.4,18.5 C14.4,19 14.8,19.4 15.7,19.4 Z" />
+</vector>

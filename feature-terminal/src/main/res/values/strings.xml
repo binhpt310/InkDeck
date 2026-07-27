@@ -40,6 +40,15 @@
     <string name="files_up">Parent directory</string>
     <string name="files_go_to">Go to path</string>
     <string name="files_empty">Empty directory</string>
+    <!-- Phase 9 item 2: structured four-state files surface (design.md §5.7). The legacy
+         `files_empty` is kept so any older reference still resolves, but new code uses the
+         `_title`/`_detail` pair below for the structured EmptyStateView. -->
+    <string name="files_empty_title">Empty directory</string>
+    <string name="files_empty_detail">No files or subdirectories here.</string>
+    <string name="files_offline_title">Can\'t reach the host</string>
+    <string name="files_offline_detail">The SFTP session dropped. Reconnect from the terminal tab and try again.</string>
+    <string name="files_error_title">Listing failed</string>
+    <string name="files_error_action">Retry</string>
     <string name="files_upload">⬆ Upload</string>
     <string name="files_new_dir">✚ Dir</string>
     <string name="files_new_dir_hint">Directory name</string>

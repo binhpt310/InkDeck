@@ -48,6 +48,10 @@ class FileViewerView @JvmOverloads constructor(
     private val body = TextView(context)
     private val scroll = EinkScrollView(context)
     private val rail = PagedScrollRail(context)
+    // Phase 9 item 2: design.md §5.7 loading silhouette in the body region. A 5-state bar
+    // beats a one-line "Loading…" — at 16 fps a stepped bar is a real signal, a text label is
+    // the same thing the empty state would render if the file happened to be empty.
+    private val loadingBar = dev.inkdeck.eink.widget.StepBar(context)
 
     init {
         orientation = VERTICAL
@@ -99,6 +103,18 @@ class FileViewerView @JvmOverloads constructor(
                 marginEnd = EinkTheme.dp(context, 8f).toInt()
             },
         )
+        // The loading bar overlays the (empty) body, centred, in the body area only. It is
+        // hidden the moment show() runs and the real content fills the body.
+        loadingBar.visibility = GONE
+        stack.addView(
+            loadingBar,
+            FrameLayout.LayoutParams(
+                EinkTheme.dp(context, 160f).toInt(),
+                EinkTheme.dp(context, 12f).toInt(),
+            ).apply {
+                gravity = Gravity.CENTER
+            },
+        )
         addView(stack, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
     }
 
@@ -139,11 +155,16 @@ class FileViewerView @JvmOverloads constructor(
     fun showLoading(name: String) {
         titleView.text = name
         subtitleView.text = context.getString(R.string.files_loading)
+        // Phase 9 item 2: the structured §5.7 loading silhouette replaces the "Loading…" text.
+        // The text label is still on screen (as the subtitle); the StepBar is the glyph.
         body.text = ""
+        loadingBar.progress = 1
+        loadingBar.visibility = VISIBLE
     }
 
     fun show(result: SftpBrowser.ReadResult) {
         titleView.text = result.name
+        loadingBar.visibility = GONE
         rail.refresher = refresher
 
         val binary = looksBinary(result.bytes)
@@ -170,6 +191,7 @@ class FileViewerView @JvmOverloads constructor(
         titleView.text = name
         subtitleView.text = context.getString(R.string.viewer_failed)
         body.text = message
+        loadingBar.visibility = GONE
     }
 
     /**

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -50,6 +51,20 @@ class TasksViewModel(app: Application) : AndroidViewModel(app) {
                 pending = open.count { it.dueAt != null },
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Board())
+
+    /**
+     * Phase 9 item 7: true until [board] has emitted at least one non-default value. The board
+     * is a `StateFlow` that starts at the default `Board()`; on first subscription, Room's flow
+     * takes a few hundred ms to deliver the real rows on two ~1 GHz cores. The fragment uses
+     * this flag to show a `StepBar` in each pane for that window so the four panes do not flash
+     * empty before they flash full.
+     *
+     * `WhileSubscribed(5_000)` keeps the upstream alive across a 5 s unsubscribe; the flag
+     * stays `true` for the duration of that grace, which is what we want.
+     */
+    val isFirstEmit: StateFlow<Boolean> = board
+        .map { it != Board() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     /** Non-null for one collection after a repeating task rolls forward. */
     private val rolledFlow = MutableStateFlow<Pair<String, Long>?>(null)

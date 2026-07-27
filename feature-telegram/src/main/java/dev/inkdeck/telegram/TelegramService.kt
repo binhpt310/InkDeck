@@ -71,6 +71,9 @@ class TelegramService : Service() {
 
         ensureChannel()
         startForeground(NOTIFICATION_ID, buildNotification())
+        // Phase 9 item 8: log the service boundary. The probe is the only place that records the
+        // start/stop in a single tag for the 8 h drain measurement.
+        dev.inkdeck.eink.debug.IdleProbe.serviceStarted("TelegramService")
 
         // Idempotent: every resume calls start(), and re-entering a running loop would open a
         // second long poll on the same bot — Telegram answers the older one with a 409 and both
@@ -89,6 +92,7 @@ class TelegramService : Service() {
         loop = null
         scope.cancel()
         TelegramState.set(TelegramState.Phase.STOPPED)
+        dev.inkdeck.eink.debug.IdleProbe.serviceStopped("TelegramService")
         super.onDestroy()
     }
 
@@ -96,6 +100,7 @@ class TelegramService : Service() {
         loop?.cancel()
         loop = null
         TelegramState.set(TelegramState.Phase.STOPPED)
+        dev.inkdeck.eink.debug.IdleProbe.serviceStopped("TelegramService")
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -171,7 +176,9 @@ class TelegramService : Service() {
                     it.copy(phase = TelegramState.Phase.RETRYING, retryInSeconds = seconds)
                 }
                 refreshNotification()
-                Log.d(TAG, "poll failed, retrying in ${seconds}s")
+                // Phase 9 item 6: was Log.d, fires once per backoff cycle. Demoted to Log.v so
+                // an 8 h idle logcat is a few lines of flushes, not thousands of poll retries.
+                Log.v(TAG, "poll failed, retrying in ${seconds}s")
                 delay(backoffMs)
                 backoffMs = (backoffMs * 2).coerceAtMost(BACKOFF_MAX_MS)
                 continue
